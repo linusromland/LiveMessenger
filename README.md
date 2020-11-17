@@ -1,2 +1,5 @@
 # LiveMessenger
-LiveMessenger, WESWEB01
+LiveMessenger
+
+Linus Romland, Svante Jonsson & Markus Simonsen
+*MIT*
