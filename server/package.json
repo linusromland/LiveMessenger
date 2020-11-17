@@ -1,0 +1,25 @@
+{
+  "name": "livemessenger",
+  "version": "1.0.0",
+  "description": "LiveMessenger",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linusromland/LiveMessenger.git"
+  },
+  "author": "Linus Romland, Svante Jonsson & Markus Simonsen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/linusromland/LiveMessenger/issues"
+  },
+  "homepage": "https://github.com/linusromland/LiveMessenger#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "forever": "^3.0.2"
+  }
+}
