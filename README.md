@@ -1,6 +1,6 @@
 # LiveMessenger
 <br/>
-*** Currently in development and not working***
+*** Currently in development and not working ***
 <br/><br/>
 ## Open Source Multiplayer Browser Game. 
 <br/>
