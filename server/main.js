@@ -2,14 +2,17 @@
 const express = require('express'),
     app = express(),
     port = 3000,
-    User = require('models/User.js'),
-    Message = require('models/Message.js'),
-    dbModule = require('dbModule.js')
+    User = require('./models/User.js'),
+    Message = require('./models/Message.js'),
+    dBModule = require('./dbModule.js'),
+    fs = require('fs'),
+    bodyParser = require("body-parser")
 
 //Connect to Mongo
 connectToMongo("LiveMessenger")
 
 //Sets and uses depedencies etc.
+const clientDir = __dirname + "/client/";
 app.set('view engine', 'ejs')
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -37,5 +40,5 @@ function connectToMongo(dbName){
 }
 
 
-app.listen(port, () => console.log(`Example app listening on port port!`))
+app.listen(port, () => console.log(`Server listening on port ${port}!`))
 
