@@ -25,7 +25,9 @@ app.use(
 
 
 //GET ROUTES
-app.get('/', (req, res) => res.send('Live Messenger!'))
+app.get('/', (req, res) => {
+  res.render('pages/index')
+})
 
 //POST ROUTES
 //will be here l8r
