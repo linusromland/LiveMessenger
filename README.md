@@ -1,13 +1,13 @@
 # LiveMessenger
-<br/>
+
 *** Currently in development and not working ***
-<br/><br/>
-## Open Source Multiplayer Browser Game. 
-<br/>
-Soon available on Romland.Space
-<br/>
+
+## Open Source Live Messenger. 
+
+Soon available at romland.space!
+
 Written in NodeJS and HTML, CSS.
-<br/><br/>
+
 Linus Romland, Svante Jonsson & Markus Simonsen
-<br/>
-*MIT License*
+
+*LiveMessenger is under MIT License*
