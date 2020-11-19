@@ -2,7 +2,7 @@
 let express = require('express')
 let app = express()
 let port = process.env.PORT || 3000
-var cors = require('cors')
+let cors = require('cors')
 let http = require('http').Server(app)
 let io = require('socket.io')(http);
 let User = require('./models/User.js')
@@ -12,14 +12,13 @@ let fs = require('fs')
 let bodyParser = require("body-parser")
 
 //Connect to Mongo
-//connectToMongo("LiveMessenger")
+connectToMongo("LiveMessenger")
 
 //Sets and uses depedencies etc.
 const clientDir = __dirname + "/client/";
 app.set('view engine', 'ejs')
 app.use(express.json());
 app.use(cors());
-app.options('*', cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
 app.use(
@@ -35,11 +34,20 @@ app.get('/', (req, res) => {
 
 //Socket.IO ROUTES
 io.on('connection', socket => {
-  console.log('connect');
+
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('msg', (msg) => {
+    console.log(msg)
+    io.emit('msg', msg);
+  });
 });
 
 http.listen(port, function () {
-  console.log('listening on *:' + port);
+  console.log('Server listening on port ' + port);
 });
 
 //FUNCTIONS

@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Minimal working example</title>
-</head>
-<body>
-    <ul id="events"></ul>
+  <head>
+    <meta charset="UTF-8" />
+    <title>LiveMessenger</title>
+    <link rel="stylesheet" href="/style/msg.css" />
+    <link
+      rel="shortcut icon"
+      type="image/jpg"
+      href="https://uploads.marksism.space/image/6d1d957424e6e13d4762636bc1b1a503.png"
+    />
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
     <script>
-        const $events = document.getElementById('events');
+      let form = document.getElementById("sendForm");
+      let send = document.getElementById("send");
 
-        const newItem = (content) => {
-          const item = document.createElement('li');
-          item.innerText = content;
-          return item;
-        };
+      const socket = io();
 
-        const socket = io();
-
-        socket.on('connect', () => {
-          $events.appendChild(newItem('connect'));
+      socket.on("connect", () => {
+        $(function () {
+          var socket = io();
+          $("#sendForm").submit(function (e) {
+            e.preventDefault();
+            socket.emit("msg", $("#send").val());
+            $("#send").val("");
+            return false;
+          });
+          socket.on("msg", function (msg) {
+            $("#messages").append($("<li>").text(msg));
+          });
         });
+      });
     </script>
-</body>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="sendForm" action="">
+      <input id="send" autocomplete="off" />
+      <button>Send</button>
+    </form>
+  </body>
 </html>
