@@ -1,7 +1,7 @@
 //imports
-const express = require('express'),
+let express = require('express'),
     app = express(),
-    port = 3000,
+    port = process.env.PORT || 3000;
     User = require('./models/User.js'),
     Message = require('./models/Message.js'),
     dBModule = require('./dbModule.js'),
