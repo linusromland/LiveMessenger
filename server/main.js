@@ -1,22 +1,25 @@
 //imports
-let express = require('express'),
-    app = express(),
-    port = process.env.PORT || 3000,
-    http = require('http').Server(app),
-    io = require('socket.io')(http),
-    User = require('./models/User.js'),
-    Message = require('./models/Message.js'),
-    dBModule = require('./dbModule.js'),
-    fs = require('fs'),
-    bodyParser = require("body-parser")
+let express = require('express')
+let app = express()
+let port = process.env.PORT || 3000
+var cors = require('cors')
+let http = require('http').Server(app)
+let io = require('socket.io')(3001);
+let User = require('./models/User.js')
+let Message = require('./models/Message.js')
+let dBModule = require('./dbModule.js')
+let fs = require('fs')
+let bodyParser = require("body-parser")
 
 //Connect to Mongo
-connectToMongo("LiveMessenger")
+//connectToMongo("LiveMessenger")
 
 //Sets and uses depedencies etc.
 const clientDir = __dirname + "/client/";
 app.set('view engine', 'ejs')
 app.use(express.json());
+app.use(cors());
+app.options('*', cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
 app.use(
@@ -31,20 +34,21 @@ app.get('/', (req, res) => {
 })
 
 //Socket.IO ROUTES
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
+io.on('connection', socket => {
+  console.log('connect');
+});
+
+http.listen(port, function () {
+  console.log('listening on *:' + port);
 });
 
 //FUNCTIONS
-function connectToMongo(dbName){
-    if (fs.existsSync("mongoauth.json")) {
-        dBModule.cnctDBAuth(dbName);
-      } else {
-        dBModule.cnctDB(dbName);
-      }
+function connectToMongo(dbName) {
+  if (fs.existsSync("mongoauth.json")) {
+    dBModule.cnctDBAuth(dbName);
+  } else {
+    dBModule.cnctDB(dbName);
+  }
 }
 
-app.listen(port, () => console.log(`Server listening on port ${port}!`))
 
