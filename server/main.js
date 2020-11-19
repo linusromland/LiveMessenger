@@ -31,9 +31,6 @@ app.get('/', (req, res) => {
   res.render('pages/index')
 })
 
-//POST ROUTES
-//will be here l8r
-
 //Socket.IO ROUTES
 io.on('connection', function(socket){
   socket.on('chat message', function(msg){
