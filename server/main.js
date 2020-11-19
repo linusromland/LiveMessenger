@@ -34,12 +34,6 @@ app.get('/', (req, res) => {
 
 //Socket.IO ROUTES
 io.on('connection', socket => {
-
-  console.log('a user connected');
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
-
   socket.on('msg', (msg) => {
     console.log(msg)
     io.emit('msg', msg);
