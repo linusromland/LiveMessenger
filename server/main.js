@@ -1,12 +1,15 @@
 //imports
-const express = require('express'),
-    app = express(),
-    port = 3000,
-    User = require('./models/User.js'),
-    Message = require('./models/Message.js'),
-    dBModule = require('./dbModule.js'),
-    fs = require('fs'),
-    bodyParser = require("body-parser")
+let express = require('express')
+let app = express()
+let port = process.env.PORT || 3000
+let cors = require('cors')
+let http = require('http').Server(app)
+let io = require('socket.io')(http);
+let User = require('./models/User.js')
+let Message = require('./models/Message.js')
+let dBModule = require('./dbModule.js')
+let fs = require('fs')
+let bodyParser = require("body-parser")
 
 //Connect to Mongo
 connectToMongo("LiveMessenger")
@@ -15,6 +18,7 @@ connectToMongo("LiveMessenger")
 const clientDir = __dirname + "/client/";
 app.set('view engine', 'ejs')
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
 app.use(
@@ -23,24 +27,30 @@ app.use(
   })
 );
 
-
 //GET ROUTES
 app.get('/', (req, res) => {
   res.render('pages/index')
 })
 
-//POST ROUTES
-//will be here l8r
+//Socket.IO ROUTES
+io.on('connection', socket => {
+  socket.on('msg', (msg) => {
+    console.log(msg)
+    io.emit('msg', msg);
+  });
+});
+
+http.listen(port, function () {
+  console.log('Server listening on port ' + port);
+});
 
 //FUNCTIONS
-function connectToMongo(dbName){
-    if (fs.existsSync("mongoauth.json")) {
-        dBModule.cnctDBAuth(dbName);
-      } else {
-        dBModule.cnctDB(dbName);
-      }
+function connectToMongo(dbName) {
+  if (fs.existsSync("mongoauth.json")) {
+    dBModule.cnctDBAuth(dbName);
+  } else {
+    dBModule.cnctDB(dbName);
+  }
 }
 
-
-app.listen(port, () => console.log(`Server listening on port ${port}!`))
 
