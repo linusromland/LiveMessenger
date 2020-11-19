@@ -25,7 +25,6 @@ app.use(
   })
 );
 
-
 //GET ROUTES
 app.get('/', (req, res) => {
   res.render('pages/index')
@@ -46,7 +45,6 @@ function connectToMongo(dbName){
         dBModule.cnctDB(dbName);
       }
 }
-
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`))
 
