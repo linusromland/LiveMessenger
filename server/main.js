@@ -1,7 +1,9 @@
 //imports
 let express = require('express'),
     app = express(),
-    port = process.env.PORT || 3000;
+    port = process.env.PORT || 3000,
+    http = require('http').Server(app),
+    io = require('socket.io')(http),
     User = require('./models/User.js'),
     Message = require('./models/Message.js'),
     dBModule = require('./dbModule.js'),
@@ -31,6 +33,13 @@ app.get('/', (req, res) => {
 
 //POST ROUTES
 //will be here l8r
+
+//Socket.IO ROUTES
+io.on('connection', function(socket){
+  socket.on('chat message', function(msg){
+    io.emit('chat message', msg);
+  });
+});
 
 //FUNCTIONS
 function connectToMongo(dbName){
