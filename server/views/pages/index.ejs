@@ -24,12 +24,16 @@
           var socket = io();
           $("#sendForm").submit(function (e) {
             e.preventDefault();
-            socket.emit("msg", $("#send").val());
+            let jsonObj = {
+              msg: $("#send").val(),
+              usr: $("#user").val()
+            }
+            socket.emit("msg", jsonObj);
             $("#send").val("");
             return false;
           });
           socket.on("msg", function (msg) {
-            $("#messages").append($("<li>").text(msg));
+            $("#messages").append($("<li>").text(msg.msg));
           });
         });
       });
@@ -40,6 +44,7 @@
     <form id="sendForm" action="">
       <input id="send" autocomplete="off" />
       <button>Send</button>
+      <input id="user" type="text">
     </form>
   </body>
 </html>

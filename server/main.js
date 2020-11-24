@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
-    dBModule.saveToDB(createMessage(msg, "tmp"));
+    dBModule.saveToDB(createMessage(msg.msg, msg.usr));
     io.emit("msg", msg);
   });
 });
