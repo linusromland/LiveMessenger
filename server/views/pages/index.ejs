@@ -33,7 +33,7 @@
             return false;
           });
           socket.on("msg", function (msg) {
-            $("#messages").append($("<li>").text(msg.msg));
+            $("#messages").append($("<li>").text("<b>" + msg.usr + ": </b>" +  msg.msg));
           });
         });
       });
