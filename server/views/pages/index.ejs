@@ -51,6 +51,15 @@
         });
       });
     });
+
+    function checkEmpty(doc){
+      let button = document.getElementById("btn")
+      if(doc.value){
+          button.disabled = false;
+      }else{
+        button.disabled = true;
+      }
+    }
   </script>
 </head>
 
@@ -61,8 +70,8 @@
     <% } %>
   </ul>
   <form id="sendForm" action="">
-    <input id="send" autocomplete="off" />
-    <button>Send</button>
+    <input id="send" autocomplete="off" oninput="checkEmpty(this)" />
+    <button id="btn">Send</button>
     <input id="user" type="text">
   </form>
 </body>
