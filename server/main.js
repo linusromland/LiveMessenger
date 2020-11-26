@@ -1,7 +1,7 @@
 //imports
 let express = require('express')
 let app = express()
-let port = process.env.PORT || 3006
+let port = process.env.PORT || 3000
 let cors = require('cors')
 let http = require('http').Server(app)
 let io = require('socket.io')(http);
