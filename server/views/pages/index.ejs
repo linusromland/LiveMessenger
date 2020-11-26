@@ -37,7 +37,13 @@
           userCSS.css("font-weight", "bold");*/
           //let userCSS = document.createElement("b");
 
-          $("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
+          let msgHtml = document.createElement("li");
+
+          msgHtml.innerHTML = `<p><b>${msg.usr}: </b>${msg.msg}</p>`;
+
+          document.getElementById("messages").appendChild(msgHtml);
+
+          //$("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
 
           console.log(i)
 
@@ -51,7 +57,7 @@
 <body>
   <ul id="messages">
     <% for( let index = 0; index < messages.length; index++ ) { %>
-      <li><p><%- messages[index].message %> <b><%- messages[index].user %></b></p></li>
+      <li><p><b><%- messages[index].user %>: </b><%- messages[index].message %></p></li>
     <% } %>
   </ul>
   <form id="sendForm" action="">

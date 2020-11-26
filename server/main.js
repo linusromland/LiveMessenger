@@ -38,7 +38,7 @@ app.get('/', async (req, res) => {
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
-    dBModule.saveToDB(createMessage(msg.msg, msg.usr));
+    dBModule.saveToDB(createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10)));
     io.emit("msg", msg);
   });
 });
