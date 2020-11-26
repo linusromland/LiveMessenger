@@ -1,5 +1,5 @@
 # LiveMessenger
-*** Currently in development and not working ***
+*** Currently in development ***
 
 ## Open Source Live Messenger. 
 Soon available at romland.space!
