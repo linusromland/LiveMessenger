@@ -41,9 +41,8 @@ exports.findInDBOne = async (Model, toFind) => {
     return await Model.findOne({ name: toFind })
 }
 
-exports.findInDB = async (Model, limit) => {
-    let tmp = await Model.find({}).sort({ views : -1}).limit(limit)
-    return tmp;
+exports.findInDB = async (Model) => {
+    return await Model.find({});
 }
 
 exports.searchInDB = async (Model, limit, search) => {

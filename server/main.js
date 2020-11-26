@@ -27,9 +27,13 @@ app.use(
 );
 
 //GET ROUTES
-app.get("/", (req, res) => {
-  res.render("pages/index");
-});
+app.get('/', async (req, res) => {
+  let messages = await dBModule.findInDB(MessageModel)
+  console.log(messages)
+  res.render('pages/index', {
+    messages: messages
+  })
+})
 
 //Socket.IO ROUTES
 io.on("connection", (socket) => {

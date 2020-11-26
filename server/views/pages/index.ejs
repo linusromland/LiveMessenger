@@ -49,7 +49,11 @@
 </head>
 
 <body>
-  <ul id="messages"></ul>
+  <ul id="messages">
+    <% for( let index = 0; index < messages.length; index++ ) { %>
+      <li><p><%- messages[index].message %> <b><%- messages[index].user %></b></p></li>
+    <% } %>
+  </ul>
   <form id="sendForm" action="">
     <input id="send" autocomplete="off" />
     <button>Send</button>
