@@ -28,6 +28,7 @@
           }
           socket.emit("msg", jsonObj);
           $("#send").val("");
+          checkEmpty();
           return false;
         });
         let i = 0;
@@ -52,27 +53,30 @@
       });
     });
 
-    function checkEmpty(doc){
+    function checkEmpty(){
       let button = document.getElementById("btn")
-      if(doc.value){
+      let doc = document.getElementById("send")
+      if(doc.value && document.getElementById("user").value){
           button.disabled = false;
+          button.className = "";
       }else{
         button.disabled = true;
+        button.className = "disabled";
       }
     }
   </script>
 </head>
 
-<body>
+<body onload="checkEmpty()">
   <ul id="messages">
     <% for( let index = 0; index < messages.length; index++ ) { %>
       <li><p><b><%- messages[index].user %>: </b><%- messages[index].message %></p></li>
     <% } %>
   </ul>
   <form id="sendForm" action="">
-    <input id="send" autocomplete="off" oninput="checkEmpty(this)" />
+    <input id="send" autocomplete="off" oninput="checkEmpty()" />
     <button id="btn">Send</button>
-    <input id="user" type="text">
+    <input id="user" type="text"  oninput="checkEmpty()">
   </form>
 </body>
 
