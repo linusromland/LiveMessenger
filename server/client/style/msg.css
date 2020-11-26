@@ -36,3 +36,6 @@ form button {
 #messages li:nth-child(odd) {
   background: #eee;
 }
+.disabled{
+  background-color: rgb(128, 128, 128);
+}
