@@ -1,4 +1,5 @@
 //imports
+<<<<<<< HEAD
 const express = require("express"),
   app = express(),
   port = process.env.PORT || 3006,
@@ -11,6 +12,18 @@ const express = require("express"),
   fs = require("fs"),
   auth = require("./auth.js"),
   bodyParser = require("body-parser");
+=======
+let express = require("express");
+let app = express();
+let port = process.env.PORT || 3006;
+let cors = require("cors");
+let http = require("http").Server(app);
+let io = require("socket.io")(http);
+let MessageModel = require("./models/Message.js");
+let dBModule = require("./dbModule.js");
+let fs = require("fs");
+let bodyParser = require("body-parser");
+>>>>>>> parent of 169c1a0... Added User Registration with Client Side Hash and Salt
 
 //Config Import
 require('./config/passport');
@@ -42,6 +55,7 @@ app.get('/', async (req, res) => {
   })
 })
 
+<<<<<<< HEAD
 app.get('/register', async (req, res) => {
   res.render('pages/register', {})
 })
@@ -98,6 +112,8 @@ app.post('/login', auth.optional, (req, res, next) => {
 });
 
 
+=======
+>>>>>>> parent of 169c1a0... Added User Registration with Client Side Hash and Salt
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
@@ -131,6 +147,7 @@ function createMessage(Message, User) {
   });
   return tmp;
 }
+<<<<<<< HEAD
 
 function createUser(nameIN, passIN, emailIN) {
   return new User({
@@ -139,3 +156,5 @@ function createUser(nameIN, passIN, emailIN) {
     email: emailIN
   });
 }
+=======
+>>>>>>> parent of 169c1a0... Added User Registration with Client Side Hash and Salt
