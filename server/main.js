@@ -1,14 +1,15 @@
 //imports
-let express = require("express");
-let app = express();
-let port = process.env.PORT || 3006;
-let cors = require("cors");
-let http = require("http").Server(app);
-let io = require("socket.io")(http);
-let MessageModel = require("./models/Message.js");
-let dBModule = require("./dbModule.js");
-let fs = require("fs");
-let bodyParser = require("body-parser");
+const express = require("express"),
+  app = express(),
+  port = process.env.PORT || 3006,
+  cors = require("cors"),
+  http = require("http").Server(app),
+  io = require("socket.io")(http),
+  MessageModel = require("./models/Message.js"),
+  User = require("./models/User.js"),
+  dBModule = require("./dbModule.js"),
+  fs = require("fs"),
+  bodyParser = require("body-parser");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -34,6 +35,27 @@ app.get('/', async (req, res) => {
     messages: messages
   })
 })
+
+app.get('/register', async (req, res) => {
+  res.render('pages/register', {})
+})
+
+
+//POST ROUTES
+
+app.post("/register", async (req, res) => {
+  try {
+    const userExist = await dBModule.findInDBOne(User, req.body.name);
+    if (userExist == null) {
+      dBModule.saveToDB(createUser(req.body.name, req.body.password));
+      res.status(201).send();
+    } else {
+      return res.status(400).send("taken");
+    }
+  } catch {
+    res.status(500).send();
+  }
+});
 
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
@@ -67,4 +89,11 @@ function createMessage(Message, User) {
     user: User,
   });
   return tmp;
+}
+
+function createUser(nameIN, passIN) {
+  return new User({
+    name: nameIN,
+    password: passIN,
+  });
 }
