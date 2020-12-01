@@ -62,8 +62,9 @@ app.get('/', (req, res) => {
   res.render('pages/index')
 })
 
-app.get('/msgRoom', async (req, res) => {
+app.get('/msgRoom', checkAuthenticated, async (req, res) => {
   let messages = await dBModule.findInDB(MessageModel)
+  console.log(req.user)
   res.render('pages/msgRoom', {
     messages: messages
   })
