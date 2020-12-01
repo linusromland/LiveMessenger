@@ -71,9 +71,7 @@ exports.updateViews = async (Model, id) => {
 
 //takes input with type Model. Saves that model in Database. Cant be used before cnctDB or cnctDBAuth.
 exports.saveToDB = (input) => {
-    input.save(() => {
-        console.log(`Successfully saved ${input} to the database!`)
-    })
+    input.save(() => {})
 }
 
 function escapeRegex(text) {

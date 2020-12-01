@@ -27,7 +27,6 @@
             request.onreadystatechange = function () {
                 // This is ugly and i want to change it
                 let urlToLogin = window.location.protocol + "//" + window.location.host + "/login"
-                console.log(urlToLogin)
                 if(request.responseURL == urlToLogin){
                     errorArea.innerHTML = "Username or Password is incorrect"
                 }else{

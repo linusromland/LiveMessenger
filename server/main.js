@@ -60,7 +60,6 @@ if (process.env.NODE_ENV !== 'production') {
 //GET ROUTES
 app.get('/', async (req, res) => {
   let messages = await dBModule.findInDB(MessageModel)
-  console.log(messages)
   res.render('pages/index', {
     messages: messages
   })
