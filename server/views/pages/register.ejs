@@ -20,12 +20,13 @@
         let request = new XMLHttpRequest();
         let name = document.getElementById("username").value;
         let pass = CryptoJS.MD5(password + name);
+        let email = document.getElementById("email").value;
         request.open("POST", "/register", true);
         request.setRequestHeader(
             "Content-type",
             "application/x-www-form-urlencoded"
         );
-        request.send(`name=${name}&password=${pass}`);
+        request.send(`name=${name}&password=${pass}&email=${email}`);
         request.onreadystatechange = function () {
             if (request.response == "taken") {
                 errorText.innerHTML = "Username taken!";
@@ -45,13 +46,22 @@
   <body >
     <h1>LiveMessenger - Register</h1>
     <form onsubmit="registerUser();return false;">
-      <input type="text" placeholder="username" name="username" id="username" />
+      <input type="text" placeholder="username" name="username" id="username" required/>
+      <br>
+      <input
+        type="email"
+        placeholder="Email"
+        name="email"
+        id="email"
+        required
+      />
       <br />
       <input
         type="password"
         placeholder="password"
         name="password"
         id="password"
+        required
       />
       <br />
       <input
@@ -59,6 +69,7 @@
         placeholder="Confirm Password"
         name="ConfirmPassword"
         id="passwordConfirm"
+        required
       />
       <p id="errorText">
         <br />
