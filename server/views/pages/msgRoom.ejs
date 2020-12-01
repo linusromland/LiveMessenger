@@ -74,9 +74,9 @@
     <% } %>
   </ul>
   <form id="sendForm" action="">
-    <input id="send" autocomplete="off" oninput="checkEmpty()" />
+    <input id="send" autocomplete="off" oninput="checkEmpty()" maxlength="50"/>
     <button id="btn">Send</button>
-    <input id="user" type="text"  oninput="checkEmpty()">
+    <input id="user" type="text"  oninput="checkEmpty()" maxlength="10">
   </form>
 </body>
 

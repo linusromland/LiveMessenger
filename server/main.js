@@ -35,6 +35,7 @@ app.get('/', async (req, res) => {
   })
 })
 
+
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
