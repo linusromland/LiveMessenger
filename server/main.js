@@ -36,10 +36,13 @@ app.get('/', async (req, res) => {
   })
 })
 
-app.get('/register', async (req, res) => {
+app.get('/register', checkNotAuthenticated, async (req, res) => {
   res.render('pages/register', {})
 })
 
+app.get('/login', checkNotAuthenticated, (req, res) => {
+  res.render('pages/login')
+})
 
 //POST ROUTES
 
@@ -56,6 +59,13 @@ app.post("/register", async (req, res) => {
     res.status(500).send();
   }
 });
+
+
+//Logout request
+app.delete('/logout', (req, res) => {
+  req.logOut()
+  res.redirect('/login')
+})
 
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
@@ -96,4 +106,19 @@ function createUser(nameIN, passIN) {
     name: nameIN,
     password: passIN,
   });
+}
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+
+  res.redirect('/login')
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/')
+  }
+  next()
 }
