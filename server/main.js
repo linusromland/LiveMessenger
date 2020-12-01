@@ -70,6 +70,10 @@ app.get('/register', checkNotAuthenticated, async (req, res) => {
   res.render('pages/register', {})
 })
 
+app.get('/auth', checkAuthenticated, async (req, res) => {
+  res.render('pages/auth', {})
+})
+
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('pages/login')
 })
