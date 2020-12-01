@@ -4,7 +4,8 @@ const LocalStrategy = require('passport-local').Strategy,
 
 function initialize(passport) {
   const authenticateUser = async (name, password, done) => {
-    const user = dbModule.findInDBOne(User, name)
+    const user = await dbModule.findInDBOne(User, name)
+    console.log(await user)
     if (user == null) {
       return done(null, false, { message: 'No user with that name' })
     }

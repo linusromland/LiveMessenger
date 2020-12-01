@@ -90,7 +90,7 @@ app.post("/register", async (req, res) => {
 });
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/killme',
+  successRedirect: '/',
   failureRedirect: '/login',
   failureFlash: true
 }))

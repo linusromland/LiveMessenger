@@ -25,10 +25,7 @@
             );
             request.send(`name=${name}&password=${pass}`);
             request.onreadystatechange = function () {
-                if (request.status == 200) window.location = "/"
-                if (request.status == 401) {
-                    errorArea.innerHTML = "Wrong Username or Password!";
-                }
+                window.location = request.responseURL;
             };
         }
     </script>
