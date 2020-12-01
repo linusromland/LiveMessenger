@@ -61,10 +61,8 @@ exports.searchInDB = async (Model, limit, search) => {
     return tmp;
 }
 
-exports.findVideoWithID = async (Model, toFind) => {
-    let tmp = await Model.findOne({ _id: toFind })
-    console.log(tmp)
-    return tmp
+exports.findUserWithID = async (Model, toFind) => {
+    return await Model.findOne({ _id: toFind })
 }
 
 exports.updateViews = async (Model, id) => {

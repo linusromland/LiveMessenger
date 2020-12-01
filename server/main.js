@@ -9,7 +9,13 @@ const express = require("express"),
   User = require("./models/User.js"),
   dBModule = require("./dbModule.js"),
   fs = require("fs"),
-  bodyParser = require("body-parser");
+  bodyParser = require("body-parser"),
+  passport = require('passport'),
+  flash = require('express-flash'),
+  session = require('express-session'),
+  cookieParser = require('cookie-parser'),
+  methodOverride = require('method-override');
+
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -21,11 +27,35 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
+app.use(flash())
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true 
+}))
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(methodOverride('_method'))
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
+
+const initializePassport = require('./config/passport.js')
+initializePassport(
+  passport,
+  name => User.find(user => user.name === name),
+  id => User.find(user => user.id === id)
+)
+
+//Check if production or debug
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 
 //GET ROUTES
 app.get('/', async (req, res) => {
@@ -45,7 +75,6 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
 })
 
 //POST ROUTES
-
 app.post("/register", async (req, res) => {
   try {
     const userExist = await dBModule.findInDBOne(User, req.body.name);
@@ -60,10 +89,15 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
+  successRedirect: '/killme',
+  failureRedirect: '/login',
+  failureFlash: true
+}))
 
 //Logout request
 app.delete('/logout', (req, res) => {
-  req.logOut()
+  req.logOut()  
   res.redirect('/login')
 })
 
