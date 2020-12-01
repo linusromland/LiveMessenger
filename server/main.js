@@ -9,13 +9,7 @@ const express = require("express"),
   User = require("./models/User.js"),
   dBModule = require("./dbModule.js"),
   fs = require("fs"),
-  auth = require("./auth.js"),
   bodyParser = require("body-parser");
-
-//Config Import
-require('./config/passport');
-require('dotenv').config()
-expressJwt({ secret: "secret", algorithms: ['RS256'] });
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -48,11 +42,12 @@ app.get('/register', async (req, res) => {
 
 
 //POST ROUTES
+
 app.post("/register", async (req, res) => {
   try {
     const userExist = await dBModule.findInDBOne(User, req.body.name);
     if (userExist == null) {
-      dBModule.saveToDB(createUser(req.body.name, req.body.password, req.body.email));
+      dBModule.saveToDB(createUser(req.body.name, req.body.password));
       res.status(201).send();
     } else {
       return res.status(400).send("taken");
@@ -61,42 +56,6 @@ app.post("/register", async (req, res) => {
     res.status(500).send();
   }
 });
-
-app.post('/login', auth.optional, (req, res, next) => {
-  const { body: { user } } = req;
-
-  if (!user.email) {
-    return res.status(422).json({
-      errors: {
-        email: 'is required',
-      },
-    });
-  }
-
-  if (!user.password) {
-    return res.status(422).json({
-      errors: {
-        password: 'is required',
-      },
-    });
-  }
-
-  return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
-    if (err) {
-      return next(err);
-    }
-
-    if (passportUser) {
-      const user = passportUser;
-      user.token = passportUser.generateJWT();
-
-      return res.json({ user: user.toAuthJSON() });
-    }
-
-    return status(400).info;
-  })(req, res, next);
-});
-
 
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
@@ -132,10 +91,9 @@ function createMessage(Message, User) {
   return tmp;
 }
 
-function createUser(nameIN, passIN, emailIN) {
+function createUser(nameIN, passIN) {
   return new User({
     name: nameIN,
     password: passIN,
-    email: emailIN
   });
 }
