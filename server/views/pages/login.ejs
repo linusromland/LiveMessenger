@@ -25,7 +25,14 @@
             );
             request.send(`name=${name}&password=${pass}`);
             request.onreadystatechange = function () {
-                window.location = request.responseURL;
+                // This is ugly and i want to change it
+                let urlToLogin = window.location.protocol + "//" + window.location.host + "/login"
+                console.log(urlToLogin)
+                if(request.responseURL == urlToLogin){
+                    errorArea.innerHTML = "Username or Password is incorrect"
+                }else{
+                    window.location = request.responseURL;
+                }
             };
         }
     </script>
@@ -33,9 +40,6 @@
 
 <body>
     <h1>Login</h1>
-    <% if (messages.error) { %>
-    <%= messages.error %>
-    <% } %>
     <form onsubmit="loginUser();return false;">
         <input type="text" placeholder="username" id="username" name="username" />
         <input type="password" placeholder="password" id="password" name="password" />
