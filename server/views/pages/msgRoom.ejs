@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>LiveMessenger</title>
+  <link rel="stylesheet" href="/style/msg.css" />
+  <link rel="shortcut icon" type="image/jpg"
+    href="https://uploads.marksism.space/image/6d1d957424e6e13d4762636bc1b1a503.png" />
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+  <script>
+    let form = document.getElementById("sendForm");
+    let send = document.getElementById("send");
+
+    const socket = io();
+
+    socket.on("connect", () => {
+      $(function () {
+        var socket = io();
+        $("#sendForm").submit(function (e) {
+          e.preventDefault();
+          let jsonObj = {
+            msg: $("#send").val(),
+            usr: $("#user").val()
+          }
+          socket.emit("msg", jsonObj);
+          $("#send").val("");
+          checkEmpty();
+          return false;
+        });
+        let i = 0;
+        socket.on("msg", function (msg) {
+          /*
+          let userCSS = $("<b>").text(msg.usr + ": ");
+          userCSS.css("font-weight", "bold");*/
+          //let userCSS = document.createElement("b");
+
+          let msgHtml = document.createElement("li");
+
+          msgHtml.innerHTML = `<p><b>${msg.usr}: </b>${msg.msg}</p>`;
+
+          document.getElementById("messages").appendChild(msgHtml);
+
+          //$("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
+
+          console.log(i)
+
+          i = i + 1;
+
+          window.scrollTo(0,document.body.scrollHeight);  
+        });
+      });
+    });
+
+    function checkEmpty(){
+      let button = document.getElementById("btn")
+      let doc = document.getElementById("send")
+      if(doc.value && document.getElementById("user").value){
+          button.disabled = false;
+          button.className = "";
+      }else{
+        button.disabled = true;
+        button.className = "disabled";
+      }
+    }
+  </script>
+</head>
+
+<body onload="checkEmpty()">
+  <ul id="messages">
+    <% for( let index = 0; index < messages.length; index++ ) { %>
+      <li><p><b><%- messages[index].user %>: </b><%- messages[index].message %></p></li>
+    <% } %>
+  </ul>
+  <form id="sendForm" action="">
+    <input id="send" autocomplete="off" oninput="checkEmpty()" maxlength="50"/>
+    <button id="btn">Send</button>
+    <input id="user" type="text"  oninput="checkEmpty()" maxlength="10">
+  </form>
+</body>
+
+</html>

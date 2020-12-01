@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <title>LiveMessenger</title>
@@ -11,73 +10,27 @@
   <script src="/socket.io/socket.io.js"></script>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-  <script>
-    let form = document.getElementById("sendForm");
-    let send = document.getElementById("send");
+  <!--Bootstrap v4.5.2-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-    const socket = io();
 
-    socket.on("connect", () => {
-      $(function () {
-        var socket = io();
-        $("#sendForm").submit(function (e) {
-          e.preventDefault();
-          let jsonObj = {
-            msg: $("#send").val(),
-            usr: $("#user").val()
-          }
-          socket.emit("msg", jsonObj);
-          $("#send").val("");
-          checkEmpty();
-          return false;
-        });
-        let i = 0;
-        socket.on("msg", function (msg) {
-          /*
-          let userCSS = $("<b>").text(msg.usr + ": ");
-          userCSS.css("font-weight", "bold");*/
-          //let userCSS = document.createElement("b");
-
-          let msgHtml = document.createElement("li");
-
-          msgHtml.innerHTML = `<p><b>${msg.usr}: </b>${msg.msg}</p>`;
-
-          document.getElementById("messages").appendChild(msgHtml);
-
-          //$("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
-
-          console.log(i)
-
-          i = i + 1;
-        });
-      });
-    });
-
-    function checkEmpty(){
-      let button = document.getElementById("btn")
-      let doc = document.getElementById("send")
-      if(doc.value && document.getElementById("user").value){
-          button.disabled = false;
-          button.className = "";
-      }else{
-        button.disabled = true;
-        button.className = "disabled";
-      }
-    }
-  </script>
 </head>
-
-<body onload="checkEmpty()">
-  <ul id="messages">
-    <% for( let index = 0; index < messages.length; index++ ) { %>
-      <li><p><b><%- messages[index].user %>: </b><%- messages[index].message %></p></li>
+<body>
+  <nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
+    <a href="#" class="nav-link badge badge-primary">Create your own room</a>
+  </nav>
+    <% for( let index = 0; index < 5; index++ ) { %>
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Room <%- index+1 %> </h5>
+          <h6 class="card-subtitle mb-2 text-muted">Users: 0/5</h6> <!--Active users in the room-->
+          <p class="card-text">Very cool room where you can chat</p> <!--Text about room-->
+          <a href="#" class="card-link">Connect!</a> <!--Link to that room-->
+        </div>
+      </div>
     <% } %>
-  </ul>
-  <form id="sendForm" action="">
-    <input id="send" autocomplete="off" oninput="checkEmpty()" />
-    <button id="btn">Send</button>
-    <input id="user" type="text"  oninput="checkEmpty()">
-  </form>
 </body>
-
 </html>
