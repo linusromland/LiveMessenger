@@ -10,4 +10,5 @@ Running on port 3006
 Live preview: https://livemsg.romland.space/
 
 Linus Romland, Svante Jonsson & Markus Simonsen
+<br>
 *LiveMessenger is under MIT License*
