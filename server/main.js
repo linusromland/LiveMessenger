@@ -20,7 +20,7 @@ const express = require("express"),
 //Connect to Mongo
 connectToMongo("LiveMessenger");
 
-//Sets and uses depedencies etc.
+//Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -30,7 +30,6 @@ app.use(express.static(clientDir));
 app.use(flash())
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
   saveUninitialized: false,
   secret: 'keyboard cat',
   resave: true,
