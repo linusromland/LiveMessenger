@@ -13,14 +13,13 @@ const express = require("express"),
   passport = require('passport'),
   flash = require('express-flash'),
   session = require('express-session'),
-  cookieParser = require('cookie-parser'),
   methodOverride = require('method-override');
 
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
 
-//Sets and uses depedencies etc.
+//Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
 app.set("view engine", "ejs");
 app.use(express.json());
@@ -30,14 +29,13 @@ app.use(express.static(clientDir));
 app.use(flash())
 app.use(session({
   secret: process.env.SESSION_SECRET,
-  resave: false,
   saveUninitialized: false,
   secret: 'keyboard cat',
   resave: true,
   saveUninitialized: true 
 }))
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize(undefined))
+app.use(passport.session(undefined))
 app.use(methodOverride('_method'))
 app.use(
   bodyParser.urlencoded({
@@ -58,12 +56,17 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 //GET ROUTES
-app.get('/', (req, res) => {
+app.get('/', checkNotAuthenticated, (req, res) => {
   res.render('pages/index')
 })
 
-app.get('/msgRoom', async (req, res) => {
+app.get('/lobby', checkAuthenticated,  (req, res) => {
+  res.render('pages/lobby')
+})
+
+app.get('/msgRoom', checkAuthenticated, async (req, res) => {
   let messages = await dBModule.findInDB(MessageModel)
+  console.log(req.user)
   res.render('pages/msgRoom', {
     messages: messages
   })
@@ -111,7 +114,7 @@ app.delete('/logout', (req, res) => {
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
-    if (!(msg.msg == "" || msg.usr == "")) {
+    if (!(msg.msg === "" || msg.usr === "")) {
       dBModule.saveToDB(createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10)));
       io.emit("msg", {
         msg: msg.msg.substring(0, 50),
@@ -135,11 +138,10 @@ function connectToMongo(dbName) {
 }
 
 function createMessage(Message, User) {
-  let tmp = new MessageModel({
+  return new MessageModel({
     message: Message,
     user: User,
   });
-  return tmp;
 }
 
 function createUser(nameIN, passIN) {
@@ -154,12 +156,12 @@ function checkAuthenticated(req, res, next) {
     return next()
   }
 
-  res.redirect('/login')
+  res.redirect('/')
 }
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/')
+    return res.redirect('/lobby')
   }
   next()
 }

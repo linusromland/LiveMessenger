@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>LiveMessenger</title>
+    <link rel="stylesheet" href="/style/msg.css" />
+    <link rel="shortcut icon" type="image/jpg"
+          href="https://uploads.marksism.space/image/6d1d957424e6e13d4762636bc1b1a503.png" />
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!--Bootstrap v4.5.2-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
+    <a href="#" class="nav-link badge badge-primary">Create your own room</a>
+</nav>
+<% for( let index = 0; index < 5; index++ ) { %>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Room <%- index+1 %> </h5>
+            <h6 class="card-subtitle mb-2 text-muted">Users: 0/5</h6> <!--Active users in the room-->
+            <p class="card-text">Very cool room where you can chat</p> <!--Text about room-->
+            <a href="#" class="card-link">Connect!</a> <!--Link to that room-->
+        </div>
+    </div>
+<% } %>
+</body>
+</html>
