@@ -100,6 +100,20 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/newRoom",checkAuthenticated, async (req, res) => {
+  try {
+    const roomExist = await dBModule.findInDBOne(Room, req.body.roomName);
+    if (roomExist == null) {
+      dBModule.saveToDB(createRoom("USERHERE", req.body.maxUsers));
+      res.status(201).send();
+    } else {
+      return res.status(400).send("taken");
+    }
+  } catch {
+    res.status(500).send();
+  }
+});
+
 app.post(
   "/login",
   checkNotAuthenticated,
@@ -158,9 +172,10 @@ function createUser(nameIN, passIN) {
   });
 }
 
-function createRoom(creator, maxUsers) {
+function createRoom(creator,roomName ,maxUsers) {
   return new Room({
     creator: creator,
+    roomName: roomName,
     maxUsers: maxUsers,
   });
 }

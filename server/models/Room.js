@@ -6,6 +6,10 @@ const RoomSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  roomName: {
+    type: String,
+    required: true,
+  },
   maxUsers: {
     type: Number,
     required: true,
