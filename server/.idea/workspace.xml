@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48984e39-687c-48ac-9c9a-9eb728ecfc5b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/views/pages/newRoom.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/../LICENSE" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
@@ -26,6 +25,7 @@
       <change beforePath="$PROJECT_DIR$/views/pages/lobby.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/pages/lobby.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/pages/login.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/pages/login.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/pages/msgRoom.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/pages/msgRoom.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/pages/newRoom.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/pages/newRoom.ejs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/pages/register.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/pages/register.ejs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +82,7 @@
       <option name="presentableId" value="Default" />
       <updated>1606907879241</updated>
       <workItem from="1606907880525" duration="787000" />
-      <workItem from="1606992728050" duration="1269000" />
+      <workItem from="1606992728050" duration="1819000" />
     </task>
     <servers />
   </component>

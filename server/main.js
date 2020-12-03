@@ -109,7 +109,7 @@ app.post("/newRoom", checkAuthenticated, async (req, res) => {
         const roomExist = await dBModule.findInDBOne(Room, req.body.roomName, req.body.roomName);
         if (roomExist == null) {
             let maxUsers = req.body.maxUsers;
-            if ((!(maxUsers > 50 && maxUsers < 1)) && typeof maxUsers == 'number') {
+            if (!(maxUsers > 50 && maxUsers < 1) && typeof maxUsers == 'number') {
                 dBModule.saveToDB(createRoom("USERHERE", req.body.roomName, req.body.maxUsers));
                 res.status(201).send();
             } else {
