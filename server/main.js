@@ -107,7 +107,7 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
 
 app.post("/newRoom", checkAuthenticated, async (req, res) => {
     try {
-        const roomExist = await dBModule.findInDBOne(Room, req.body.roomName, req.body.roomName);
+        const roomExist = await dBModule.findInDBOneRoom(Room, req.body.roomName, req.body.roomName);
         if (roomExist == null) {
             let maxUsers = req.body.maxUsers;
             if (!(maxUsers > 50 && maxUsers < 1)) {
@@ -155,6 +155,8 @@ io.on("connection", (socket) => {
         }
     });
 });
+
+
 
 http.listen(port, function () {
     console.log("Server listening on port " + port);

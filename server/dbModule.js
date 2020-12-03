@@ -41,6 +41,10 @@ exports.findInDBOne = async (Model, toFind) => {
     return await Model.findOne({ name: toFind })
 }
 
+exports.findInDBOneRoom = async (Model, toFind) => {
+    return await Model.findOne({ roomName: toFind })
+}
+
 exports.findInDB = async (Model) => {
     return await Model.find({});
 }
