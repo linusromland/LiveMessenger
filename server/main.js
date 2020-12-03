@@ -112,7 +112,7 @@ app.post("/newRoom", checkAuthenticated, async (req, res) => {
             let maxUsers = req.body.maxUsers;
             if (!(maxUsers > 50 && maxUsers < 1)) {
                 let tmp = await req.user;
-                dBModule.saveToDB(createRoom(tmp.name, req.body.roomName, req.body.maxUsers));
+                dBModule.saveToDB(createRoom(tmp.name, req.body.roomName, req.body.desc, req.body.maxUsers));
                 res.status(201).send();
             } else {
                 res.status(500).send();
@@ -185,10 +185,11 @@ function createUser(nameIN, passIN) {
     });
 }
 
-function createRoom(creator, roomName, maxUsers) {
+function createRoom(creator, roomName, desc, maxUsers) {
     return new Room({
         creator: creator,
         roomName: roomName,
+        desc: desc,
         maxUsers: maxUsers,
     });
 }

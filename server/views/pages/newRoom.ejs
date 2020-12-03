@@ -12,13 +12,14 @@
             console.log("room Creation maybe");
             let request = new XMLHttpRequest();
             let roomName = document.getElementById("roomName").value;
+            let desc = document.getElementById("desc").value;
             let maxUsers = document.getElementById("maxUsers").value;
             request.open("POST", "/newRoom", true);
             request.setRequestHeader(
                 "Content-type",
                 "application/x-www-form-urlencoded"
             );
-            request.send(`roomName=${roomName}&maxUsers=${maxUsers}`);
+            request.send(`roomName=${roomName}&desc=${desc}&maxUsers=${maxUsers}`);
             request.onreadystatechange = function () {
                 if (request.response == "taken") {
                     errorText.innerHTML = "Room Name taken!";
@@ -39,6 +40,7 @@
 <form onsubmit="registerRoom();return false;">
     <input type="text" placeholder="Room Name" name="roomName" id="roomName"/>
     <br/>
+    <input type="text" placeholder="Description" name="desc" id="desc"/>
     <input type="number" placeholder="Max Users" id="maxUsers" name="maxUsers" min="1" max="50"/>
     <p id="errorText">
         <br/>
