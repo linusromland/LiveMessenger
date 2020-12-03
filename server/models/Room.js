@@ -18,14 +18,6 @@ const RoomSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  usersConnected: {
-    user: {
-      type: String,
-    },
-    date: {
-      type: Date,
-    },
-  },
   messages: {
     user: {
       type: String,
