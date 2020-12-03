@@ -16,12 +16,12 @@ const RoomSchema = new mongoose.Schema({
   },
   usersConnected: {
     user: {
-        type: String,
+      type: String,
     },
     date: {
       type: Date,
     },
-    },
+  },
   messages: {
     user: {
       type: String,

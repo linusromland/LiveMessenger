@@ -7,14 +7,14 @@ const express = require("express"),
   io = require("socket.io")(http),
   MessageModel = require("./models/Message.js"),
   User = require("./models/User.js"),
+  Room = require("./models/Room.js"),
   dBModule = require("./dbModule.js"),
   fs = require("fs"),
   bodyParser = require("body-parser"),
-  passport = require('passport'),
-  flash = require('express-flash'),
-  session = require('express-session'),
-  methodOverride = require('method-override');
-
+  passport = require("passport"),
+  flash = require("express-flash"),
+  session = require("express-session"),
+  methodOverride = require("method-override");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -26,62 +26,64 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
-app.use(flash())
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  saveUninitialized: false,
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true 
-}))
-app.use(passport.initialize(undefined))
-app.use(passport.session(undefined))
-app.use(methodOverride('_method'))
+app.use(flash());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize(undefined));
+app.use(passport.session(undefined));
+app.use(methodOverride("_method"));
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 
-const initializePassport = require('./config/passport.js')
+const initializePassport = require("./config/passport.js");
 initializePassport(
   passport,
-  name => User.find(user => user.name === name),
-  id => User.find(user => user.id === id)
-)
+  (name) => User.find((user) => user.name === name),
+  (id) => User.find((user) => user.id === id)
+);
 
 //Check if production or debug
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 
 //GET ROUTES
-app.get('/', checkNotAuthenticated, (req, res) => {
-  res.render('pages/index')
-})
+app.get("/", checkNotAuthenticated, (req, res) => {
+  res.render("pages/index");
+});
 
-app.get('/lobby', checkAuthenticated,  (req, res) => {
-  res.render('pages/lobby')
-})
+app.get("/lobby", checkAuthenticated, (req, res) => {
+  res.render("pages/lobby");
+});
 
-app.get('/msgRoom', checkAuthenticated, async (req, res) => {
-  let messages = await dBModule.findInDB(MessageModel)
-  res.render('pages/msgRoom', {
-    messages: messages
-  })
-})
+app.get("/msgRoom", checkAuthenticated, async (req, res) => {
+  let messages = await dBModule.findInDB(MessageModel);
+  res.render("pages/msgRoom", {
+    messages: messages,
+  });
+});
 
-app.get('/register', checkNotAuthenticated, async (req, res) => {
-  res.render('pages/register', {})
-})
+app.get("/register", checkNotAuthenticated, async (req, res) => {
+  res.render("pages/register", {});
+});
 
-app.get('/auth', checkAuthenticated, async (req, res) => {
-  res.render('pages/auth', {})
-})
+app.get("/auth", checkAuthenticated, async (req, res) => {
+  res.render("pages/auth", {});
+});
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
-  res.render('pages/login')
-})
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  res.render("pages/login");
+});
 
 //POST ROUTES
 app.post("/register", async (req, res) => {
@@ -98,26 +100,32 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+app.post(
+  "/login",
+  checkNotAuthenticated,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 
 //Logout request
-app.delete('/logout', (req, res) => {
-  req.logOut()  
-  res.redirect('/login')
-})
+app.delete("/logout", (req, res) => {
+  req.logOut();
+  res.redirect("/login");
+});
 
 //Socket.IO ROUTES
 io.on("connection", (socket) => {
   socket.on("msg", (msg) => {
     if (!(msg.msg === "" || msg.usr === "")) {
-      dBModule.saveToDB(createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10)));
+      dBModule.saveToDB(
+        createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10))
+      );
       io.emit("msg", {
         msg: msg.msg.substring(0, 50),
-        usr: msg.usr.substring(0, 10)
+        usr: msg.usr.substring(0, 10),
       });
     }
   });
@@ -150,17 +158,24 @@ function createUser(nameIN, passIN) {
   });
 }
 
+function createRoom(creator, maxUsers) {
+  return new Room({
+    creator: creator,
+    maxUsers: maxUsers,
+  });
+}
+
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return next()
+    return next();
   }
 
-  res.redirect('/')
+  res.redirect("/");
 }
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/lobby')
+    return res.redirect("/lobby");
   }
-  next()
+  next();
 }
