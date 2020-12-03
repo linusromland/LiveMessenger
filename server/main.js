@@ -71,6 +71,8 @@ app.get("/msgRoom", checkAuthenticated, async (req, res) => {
   let room = req.query.room;
   let messages = await dBModule.findRoomInDB(Room, room);
   if (room && messages) {
+      let tmp = messages.messages;
+      console.log(tmp)
     res.render("pages/msgRoom", {
       messages: messages.messages,
       room: room,
