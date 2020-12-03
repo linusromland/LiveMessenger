@@ -41,6 +41,15 @@ exports.findInDBOne = async (Model, toFind) => {
     return await Model.findOne({ name: toFind })
 }
 
+//Finds "toFind" in Database on the Model provided
+exports.findRoomInDB = async (Model, toFind) => {
+    return await Model.findOne({ roomName: toFind })
+}
+
+exports.addMessageToRoom = async (Model, roomName, Message) => {
+    await Model.updateOne({ roomName: roomName }, { $push: { messages: Message } });
+}
+
 exports.findInDBOneRoom = async (Model, toFind) => {
     return await Model.findOne({ roomName: toFind })
 }
