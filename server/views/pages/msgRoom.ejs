@@ -39,14 +39,11 @@
           //let userCSS = document.createElement("b");
 
           let msgHtml = document.createElement("li");
-
-          msgHtml.innerHTML = `<p><b>${msg.usr}: </b>${msg.msg}</p>`;
+          msgHtml.innerHTML = `<p><b>${escapeHtml(msg.usr)}: </b>${escapeHtml(msg.msg)}</p>`;
 
           document.getElementById("messages").appendChild(msgHtml);
 
           //$("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
-
-          console.log(i)
           i = i + 1;
 
           window.scrollTo(0,document.body.scrollHeight);  
@@ -65,13 +62,22 @@
         button.className = "disabled";
       }
     }
+
+    function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
   </script>
 </head>
 
 <body onload="checkEmpty()">
   <ul id="messages">
     <% for( let index = 0; index < messages.length; index++ ) { %>
-      <li><p><b><%- messages[index].user %>: </b><%- messages[index].message %></p></li>
+      <li><p><b><%= messages[index].user %>: </b><%= messages[index].message %></p></li>
     <% } %>
   </ul>
   <form id="sendForm" action="">
