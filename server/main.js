@@ -7,14 +7,14 @@ const express = require("express"),
   io = require("socket.io")(http),
   MessageModel = require("./models/Message.js"),
   User = require("./models/User.js"),
+  Room = require("./models/Room.js"),
   dBModule = require("./dbModule.js"),
   fs = require("fs"),
   bodyParser = require("body-parser"),
-  passport = require('passport'),
-  flash = require('express-flash'),
-  session = require('express-session'),
-  methodOverride = require('method-override');
-
+  passport = require("passport"),
+  flash = require("express-flash"),
+  session = require("express-session"),
+  methodOverride = require("method-override");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -26,66 +26,81 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(clientDir));
-app.use(flash())
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  saveUninitialized: false,
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true 
-}))
-app.use(passport.initialize(undefined))
-app.use(passport.session(undefined))
-app.use(methodOverride('_method'))
+app.use(flash());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    saveUninitialized: false,
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(passport.initialize(undefined));
+app.use(passport.session(undefined));
+app.use(methodOverride("_method"));
 app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 
-const initializePassport = require('./config/passport.js')
+const { isNumber } = require("util");
+const initializePassport = require("./config/passport.js");
 initializePassport(
   passport,
-  name => User.find(user => user.name === name),
-  id => User.find(user => user.id === id)
-)
+  (name) => User.find((user) => user.name === name),
+  (id) => User.find((user) => user.id === id)
+);
 
 //Check if production or debug
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
 }
 
 //GET ROUTES
-app.get('/', checkNotAuthenticated, (req, res) => {
-  res.render('pages/index')
-})
+app.get("/", checkNotAuthenticated, (req, res) => {
+  res.render("pages/index");
+});
 
-app.get('/lobby', checkAuthenticated,  (req, res) => {
-  res.render('pages/lobby')
-})
+app.get("/lobby", checkAuthenticated, async (req, res) => {
+  res.render("pages/lobby", {
+    rooms: await dBModule.findInDB(Room)
+  });
+});
 
-app.get('/msgRoom', checkAuthenticated, async (req, res) => {
-  let messages = await dBModule.findInDB(MessageModel)
-  console.log(req.user)
-  res.render('pages/msgRoom', {
-    messages: messages
-  })
-})
+app.get("/msgRoom", checkAuthenticated, async (req, res) => {
+  let room = req.query.room;
+  let messages = await dBModule.findRoomInDB(Room, room);
+  if (room && messages) {
+      let tmp = messages.messages;
+    res.render("pages/msgRoom", {
+      messages: tmp.toJSON(),
+      room: room,
+    });
+  } else {
+    res.redirect("/lobby");
+  }
+});
 
-app.get('/register', checkNotAuthenticated, async (req, res) => {
-  res.render('pages/register', {})
-})
+app.get("/register", checkNotAuthenticated, async (req, res) => {
+  res.render("pages/register", {});
+});
 
-app.get('/auth', checkAuthenticated, async (req, res) => {
-  res.render('pages/auth', {})
-})
+app.get("/newRoom", checkAuthenticated, async (req, res) => {
+  res.render("pages/newRoom", {});
+});
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
-  res.render('pages/login')
-})
+app.get("/auth", checkAuthenticated, async (req, res) => {
+  res.render("pages/auth", {});
+});
+
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  res.render("pages/login");
+});
 
 //POST ROUTES
-app.post("/register", async (req, res) => {
+app.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
     const userExist = await dBModule.findInDBOne(User, req.body.name);
     if (userExist == null) {
@@ -99,29 +114,70 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/login',
-  failureFlash: true
-}))
+app.post("/newRoom", checkAuthenticated, async (req, res) => {
+  try {
+    const roomExist = await dBModule.findInDBOneRoom(
+      Room,
+      req.body.roomName,
+      req.body.roomName
+    );
+    if (roomExist == null) {
+      let maxUsers = req.body.maxUsers;
+      if (!(maxUsers > 50 && maxUsers < 1)) {
+        let tmp = await req.user;
+        dBModule.saveToDB(
+          createRoom(
+            tmp.name,
+            req.body.roomName,
+            req.body.desc,
+            req.body.maxUsers
+          )
+        );
+        res.status(201).send();
+      } else {
+        res.status(500).send();
+      }
+    } else {
+      return res.status(400).send("taken");
+    }
+  } catch {
+    res.status(500).send();
+  }
+});
+
+app.post(
+  "/login",
+  checkNotAuthenticated,
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 
 //Logout request
-app.delete('/logout', (req, res) => {
-  req.logOut()  
-  res.redirect('/login')
-})
+app.delete("/logout", (req, res) => {
+  req.logOut();
+  res.redirect("/login");
+});
 
 //Socket.IO ROUTES
-io.on("connection", (socket) => {
-  socket.on("msg", (msg) => {
-    if (!(msg.msg === "" || msg.usr === "")) {
-      dBModule.saveToDB(createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10)));
-      io.emit("msg", {
-        msg: msg.msg.substring(0, 50),
-        usr: msg.usr.substring(0, 10)
-      });
-    }
-  });
+io.on("connection", async (socket) => {
+  let rooms = await dBModule.findInDB(Room);
+  for (let index = 0; index < rooms.length; index++) {
+
+    socket.on(rooms[index].roomName, (msg) => {
+      console.log(msg);
+      if (!(msg.msg === "" || msg.usr === "")) {
+        createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10),rooms[index].roomName )
+        io.emit(rooms[index].roomName, {
+          msg: msg.msg.substring(0, 50),
+          usr: msg.usr.substring(0, 10),
+        });
+      }
+    });
+
+  }
 });
 
 http.listen(port, function () {
@@ -137,11 +193,10 @@ function connectToMongo(dbName) {
   }
 }
 
-function createMessage(Message, User) {
-  return new MessageModel({
-    message: Message,
-    user: User,
-  });
+function createMessage(Message, User, roomName) {
+  let tmp = {message: Message, user: User, date: Date.now() }
+  dBModule.addMessageToRoom(Room, roomName, tmp)
+
 }
 
 function createUser(nameIN, passIN) {
@@ -151,17 +206,25 @@ function createUser(nameIN, passIN) {
   });
 }
 
+function createRoom(creator, roomName, desc, maxUsers) {
+  return new Room({
+    creator: creator,
+    roomName: roomName,
+    desc: desc,
+    maxUsers: maxUsers,
+  });
+}
+
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return next()
+    return next();
   }
-
-  res.redirect('/')
+  res.redirect("/");
 }
 
 function checkNotAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect('/lobby')
+    return res.redirect("/lobby");
   }
-  next()
+  next();
 }

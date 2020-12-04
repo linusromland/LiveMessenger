@@ -26,13 +26,13 @@
             msg: $("#send").val(),
             usr: $("#user").val()
           }
-          socket.emit("msg", jsonObj);
+          socket.emit("<%- room %>", jsonObj);
           $("#send").val("");
           checkEmpty();
           return false;
         });
         let i = 0;
-        socket.on("msg", function (msg) {
+        socket.on("<%- room %>", function (msg) {
           /*
           let userCSS = $("<b>").text(msg.usr + ": ");
           userCSS.css("font-weight", "bold");*/
