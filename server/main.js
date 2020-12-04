@@ -63,8 +63,10 @@ app.get("/", checkNotAuthenticated, (req, res) => {
   res.render("pages/index");
 });
 
-app.get("/lobby", checkAuthenticated, (req, res) => {
-  res.render("pages/lobby");
+app.get("/lobby", checkAuthenticated, async (req, res) => {
+  res.render("pages/lobby", {
+    rooms: await dBModule.findInDB(Room)
+  });
 });
 
 app.get("/msgRoom", checkAuthenticated, async (req, res) => {
@@ -72,9 +74,8 @@ app.get("/msgRoom", checkAuthenticated, async (req, res) => {
   let messages = await dBModule.findRoomInDB(Room, room);
   if (room && messages) {
       let tmp = messages.messages;
-      console.log(tmp)
     res.render("pages/msgRoom", {
-      messages: messages.messages,
+      messages: tmp.toJSON(),
       room: room,
     });
   } else {

@@ -22,13 +22,13 @@
     <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
     <a href="/newRoom" class="nav-link badge badge-primary">Create your own room</a>
 </nav>
-<% for( let index = 0; index < 5; index++ ) { %>
+<% for( let index = 0; index < rooms.length; index++ ) { %>
     <div class="card" style="width: 18rem;">
         <div class="card-body">
-            <h5 class="card-title">Room <%- index+1 %> </h5>
-            <h6 class="card-subtitle mb-2 text-muted">Users: 0/5</h6> <!--Active users in the room-->
-            <p class="card-text">Very cool room where you can chat</p> <!--Text about room-->
-            <a href="/msgroom?room=a" class="card-link">Connect!</a> <!--Link to that room-->
+            <h5 class="card-title"><%- rooms[index].roomName %> </h5>
+            <h6 class="card-subtitle mb-2 text-muted">Users: 0/<%- rooms[index].maxUsers %></h6> <!--Active users in the room-->
+            <p class="card-text"><%- rooms[index].desc %></p> <!--Text about room-->
+            <a href="/msgroom?room=<%- rooms[index].roomName %>" class="card-link">Connect!</a> <!--Link to that room-->
         </div>
     </div>
 <% } %>
