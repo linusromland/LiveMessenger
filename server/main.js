@@ -14,7 +14,8 @@ const express = require("express"),
   passport = require("passport"),
   flash = require("express-flash"),
   session = require("express-session"),
-  methodOverride = require("method-override");
+  methodOverride = require("method-override"),
+  cookie = require("cookies");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
@@ -65,7 +66,7 @@ app.get("/", checkNotAuthenticated, (req, res) => {
 
 app.get("/lobby", checkAuthenticated, async (req, res) => {
   res.render("pages/lobby", {
-    rooms: await dBModule.findInDB(Room)
+    rooms: await dBModule.findInDB(Room),
   });
 });
 
@@ -73,7 +74,7 @@ app.get("/msgRoom", checkAuthenticated, async (req, res) => {
   let room = req.query.room;
   let messages = await dBModule.findRoomInDB(Room, room);
   if (room && messages) {
-      let tmp = messages.messages;
+    let tmp = messages.messages;
     res.render("pages/msgRoom", {
       messages: tmp.toJSON(),
       room: room,
@@ -165,17 +166,27 @@ app.delete("/logout", (req, res) => {
 io.on("connection", async (socket) => {
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-
     socket.on(rooms[index].roomName, (msg) => {
       if (!(msg.msg === "" || msg.usr === "")) {
-        createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10),rooms[index].roomName )
+        let cookief = socket.handshake.headers.cookie.substring(12);
+        console.log(cookief)  
+        createMessage(
+          msg.msg.substring(0, 50),
+          msg.usr.substring(0, 10),
+          rooms[index].roomName
+        );
         io.emit(rooms[index].roomName, {
           msg: msg.msg.substring(0, 50),
           usr: msg.usr.substring(0, 10),
         });
       }
     });
-
+    io.sockets.in(rooms[index].roomName).on("join", function () {
+      console.log("Someone joined the " + rooms[index].roomName);
+    });
+    io.sockets.in(rooms[index].roomName).on("leave", function () {
+      console.log("Someone left the " + rooms[index].roomName);
+    });
   }
 });
 
@@ -193,9 +204,8 @@ function connectToMongo(dbName) {
 }
 
 function createMessage(Message, User, roomName) {
-  let tmp = {message: Message, user: User, date: Date.now() }
-  dBModule.addMessageToRoom(Room, roomName, tmp)
-
+  let tmp = { message: Message, user: User, date: Date.now() };
+  dBModule.addMessageToRoom(Room, roomName, tmp);
 }
 
 function createUser(nameIN, passIN) {
