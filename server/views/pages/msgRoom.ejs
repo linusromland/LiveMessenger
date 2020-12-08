@@ -16,7 +16,6 @@
     let send = document.getElementById("send");
 
     const socket = io();
-
     socket.on("connect", () => {
       window.scrollTo(0,document.body.scrollHeight);
       $(function () {

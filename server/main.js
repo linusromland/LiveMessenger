@@ -162,11 +162,13 @@ app.delete("/logout", (req, res) => {
 });
 
 //Socket.IO ROUTES
+const userSocketIdMap = new Map(); 
 io.on("connection", async (socket) => {
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-
     socket.on(rooms[index].roomName, (msg) => {
+      console.log(`${msg.usr} has connected`) //new code
+      addUserToMap(msg.usr, socket.id); //new code
       if (!(msg.msg === "" || msg.usr === "")) {
         createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10),rooms[index].roomName )
         io.emit(rooms[index].roomName, {
@@ -175,9 +177,17 @@ io.on("connection", async (socket) => {
         });
       }
     });
-
   }
 });
+
+  io.on("disconnect", () => {
+    //remove this user from online list
+    removeUserFromMap(userName, socket.id);
+    console.log(`${msg.usr} has disconnected`)
+    });
+
+
+
 
 http.listen(port, function () {
   console.log("Server listening on port " + port);
@@ -227,3 +237,24 @@ function checkNotAuthenticated(req, res, next) {
   }
   next();
 }
+
+function addUserToMap(userName, socketId){
+  if (!userSocketIdMap.has(userName)) {
+  //when user is joining first time
+  userSocketIdMap.set(userName, new Set([socketId]));
+  } else{
+  //user had already joined from one client and now joining using another client
+  userSocketIdMap.get(userName).add(socketId);
+  }
+  }
+
+  function removeUserFromMap(userName, socketId){
+    if (userSocketIdMap.has(userName)) {
+    let userSocketIdSet = userSocketIdMap.get(userName);
+    userSocketIdSet.delete(socketID);
+    //if there are no clients for a user, remove that user from online list (map)
+    if (userSocketIdSet.size ==0 ) {
+    userSocketIdMap.delete(userName);
+    }
+    }
+    }
