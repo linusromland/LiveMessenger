@@ -5,7 +5,6 @@ let accurancy = document.getElementById("accurat");
 let textMood = document.getElementById("textMood");
 let closest;
 let old;
-let oldTime;
 
 Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
@@ -39,10 +38,7 @@ video.addEventListener("play", () => {
       let expression = checkExpression(detections[0].expressions);
       if ((await expression).accuracy > 95) {
         if(old && old == await (await expression).expression){
-          if((Date.now() -  oldTime) > 5000){
-            //window.location = "/msgroom?room=" + old
-            console.log("/msgroom?room=" + old)
-          }
+          console.log(old)
         }else{
           changeTheme(await expression);
         }
@@ -89,7 +85,6 @@ function changeTheme(expression) {
   loadCSS(expression.expression);
   setMoodTest(expression);
   old = expression.expression;
-  oldTime = Date.now();
 }
 
 function setMoodTest(expression) {
