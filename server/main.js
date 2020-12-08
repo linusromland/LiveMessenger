@@ -55,7 +55,7 @@ io.use(
   passportSocketIo.authorize({
     cookieParser: cookieParser,
     key: "connect.sid",
-    secret: process.env.SESSION_SECRET,
+    secret: "keyboard cat",
     store: store,
   })
 );
@@ -186,21 +186,17 @@ app.delete("/logout", (req, res) => {
 io.on("connection", async (socket) => {
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-    socket.on(rooms[index].roomName, (msg) => {
+    socket.on(rooms[index].roomName, async(msg) => {
       if (!(msg.msg === "" || msg.usr === "")) {
-        let cookief = socket.request.headers.cookie.substring(12);
-        passport.authenticate(cookief, {
-          session: false,
-          failureRedirect: "/",
-        });
+        let tmp = await socket.request.user
         createMessage(
           msg.msg.substring(0, 50),
-          msg.usr.substring(0, 10),
+          tmp.name,
           rooms[index].roomName
         );
         io.emit(rooms[index].roomName, {
           msg: msg.msg.substring(0, 50),
-          usr: msg.usr.substring(0, 10),
+          usr: tmp.name,
         });
       }
     });
