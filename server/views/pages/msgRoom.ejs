@@ -36,8 +36,7 @@
         $("#sendForm").submit(function (e) {
           e.preventDefault();
           let jsonObj = {
-            msg: $("#send").val(),
-            usr: $("#user").val()
+            msg: $("#send").val()
           }
           socket.emit("<%- room %>", jsonObj);
           $("#send").val("");
@@ -67,7 +66,7 @@
     function checkEmpty(){
       let button = document.getElementById("btn")
       let doc = document.getElementById("send")
-      if(doc.value && document.getElementById("user").value){
+      if(doc.value){
           button.disabled = false;
           button.className = "";
       }else{
@@ -96,7 +95,6 @@
   <form id="sendForm" action="">
     <input id="send" autocomplete="off" oninput="checkEmpty()" maxlength="50"/>
     <button id="btn">Send</button>
-    <input id="user" type="text"  oninput="checkEmpty()" maxlength="10">
   </form>
 </body>
 

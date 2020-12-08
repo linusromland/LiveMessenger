@@ -200,12 +200,6 @@ io.on("connection", async (socket) => {
         });
       }
     });
-    io.sockets.in(rooms[index].roomName).on("join", function () {
-      console.log("Someone joined the " + rooms[index].roomName);
-    });
-    io.sockets.in(rooms[index].roomName).on("leave", function () {
-      console.log("Someone left the " + rooms[index].roomName);
-    });
   }
 });
 
