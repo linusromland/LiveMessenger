@@ -25,7 +25,7 @@ connectToMongo("LiveMessenger");
 
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
-const store = sessionstore.createSessionStore({ type: "mongodb" });
+let store;
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(cors());
@@ -207,12 +207,21 @@ http.listen(port, function () {
   console.log("Server listening on port " + port);
 });
 
+
+
 //FUNCTIONS
 function connectToMongo(dbName) {
   if (fs.existsSync("mongoauth.json")) {
+    const mongAuth = require('./mongoauth.json')
     dBModule.cnctDBAuth(dbName);
+    store = sessionstore.createSessionStore({ 
+      type: "mongodb",
+      username: mongAuth.username,
+      password : mongAuth.pass
+     });
   } else {
     dBModule.cnctDB(dbName);
+    store = sessionstore.createSessionStore({ type: "mongodb" });
   }
 }
 
