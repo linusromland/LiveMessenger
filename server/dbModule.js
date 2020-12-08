@@ -19,7 +19,7 @@ exports.cnctDBAuth = (collectionname) => {
     db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function () {
-        console.log("loConnected to MongoDB using collection " + collectionname)
+        console.log("Connected to MongoDB using collection " + collectionname)
     });
 }
 
