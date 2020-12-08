@@ -15,13 +15,17 @@ const express = require("express"),
   flash = require("express-flash"),
   session = require("express-session"),
   methodOverride = require("method-override"),
-  cookie = require("cookies");
+  cookie = require("cookies"),
+  passportSocketIo = require("passport.socketio"),
+  cookieParser = require("cookie-parser"),
+  sessionstore = require("sessionstore");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
 
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
+const store = sessionstore.createSessionStore({ type: "mongodb" });
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(cors());
@@ -33,6 +37,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     secret: "keyboard cat",
+    store: store,
     resave: true,
     saveUninitialized: true,
   })
@@ -46,6 +51,15 @@ app.use(
   })
 );
 
+io.use(
+  passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: "connect.sid",
+    secret: process.env.SESSION_SECRET,
+    store: store,
+  })
+);
+
 const { isNumber } = require("util");
 const initializePassport = require("./config/passport.js");
 initializePassport(
@@ -53,6 +67,12 @@ initializePassport(
   (name) => User.find((user) => user.name === name),
   (id) => User.find((user) => user.id === id)
 );
+
+/*io.use(passportSocketIo.authorize({
+  key: 'connect.sid',
+  passport: passport,
+  cookieParser: cookieParser
+}));*/
 
 //Check if production or debug
 if (process.env.NODE_ENV !== "production") {
@@ -168,8 +188,11 @@ io.on("connection", async (socket) => {
   for (let index = 0; index < rooms.length; index++) {
     socket.on(rooms[index].roomName, (msg) => {
       if (!(msg.msg === "" || msg.usr === "")) {
-        let cookief = socket.handshake.headers.cookie.substring(12);
-        console.log(cookief)  
+        let cookief = socket.request.headers.cookie.substring(12);
+        passport.authenticate(cookief, {
+          session: false,
+          failureRedirect: "/",
+        });
         createMessage(
           msg.msg.substring(0, 50),
           msg.usr.substring(0, 10),
