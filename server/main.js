@@ -21,11 +21,11 @@ const express = require("express"),
   sessionstore = require("sessionstore");
 
 //Connect to Mongo
+let store;
 connectToMongo("LiveMessenger");
 
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
-let store;
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(cors());
