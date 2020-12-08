@@ -216,9 +216,14 @@ function connectToMongo(dbName) {
     dBModule.cnctDBAuth(dbName);
     store = sessionstore.createSessionStore({ 
       type: "mongodb",
-      authSource: 'sessions',        
-      username: mongAuth.username,
-      password : mongAuth.pass
+      host: 'localhost',
+      port: 27017,
+      dbName: 'sessionDb',
+      collectionName: 'sessions',
+      timeout: 10000,
+      authSource: 'sessions-express',
+        username: mongAuth.username,
+        password: mongAuth.pass
      });
   } else {
     dBModule.cnctDB(dbName);
