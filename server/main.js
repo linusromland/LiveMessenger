@@ -216,6 +216,7 @@ function connectToMongo(dbName) {
     dBModule.cnctDBAuth(dbName);
     store = sessionstore.createSessionStore({ 
       type: "mongodb",
+      authSource: 'sessions',        
       username: mongAuth.username,
       password : mongAuth.pass
      });
