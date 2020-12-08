@@ -12,7 +12,9 @@ exports.cnctDBAuth = (collectionname) => {
                 "authSource": "admin"
             },
             "user": mongAuth.username,
-            "pass": mongAuth.pass
+            "pass": mongAuth.pass,
+            useNewUrlParser: true, 
+            useUnifiedTopology: true
         }
     );
 
