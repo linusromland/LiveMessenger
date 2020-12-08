@@ -14,13 +14,18 @@ const express = require("express"),
   passport = require("passport"),
   flash = require("express-flash"),
   session = require("express-session"),
-  methodOverride = require("method-override");
+  methodOverride = require("method-override"),
+  cookie = require("cookies"),
+  passportSocketIo = require("passport.socketio"),
+  cookieParser = require("cookie-parser"),
+  sessionstore = require("sessionstore");
 
 //Connect to Mongo
 connectToMongo("LiveMessenger");
 
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
+const store = sessionstore.createSessionStore({ type: "mongodb" });
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(cors());
@@ -32,6 +37,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     saveUninitialized: false,
     secret: "keyboard cat",
+    store: store,
     resave: true,
     saveUninitialized: true,
   })
@@ -45,6 +51,15 @@ app.use(
   })
 );
 
+io.use(
+  passportSocketIo.authorize({
+    cookieParser: cookieParser,
+    key: "connect.sid",
+    secret: "keyboard cat",
+    store: store,
+  })
+);
+
 const { isNumber } = require("util");
 const initializePassport = require("./config/passport.js");
 initializePassport(
@@ -52,6 +67,12 @@ initializePassport(
   (name) => User.find((user) => user.name === name),
   (id) => User.find((user) => user.id === id)
 );
+
+/*io.use(passportSocketIo.authorize({
+  key: 'connect.sid',
+  passport: passport,
+  cookieParser: cookieParser
+}));*/
 
 //Check if production or debug
 if (process.env.NODE_ENV !== "production") {
@@ -65,7 +86,7 @@ app.get("/", checkNotAuthenticated, (req, res) => {
 
 app.get("/lobby", checkAuthenticated, async (req, res) => {
   res.render("pages/lobby", {
-    rooms: await dBModule.findInDB(Room)
+    rooms: await dBModule.findInDB(Room),
   });
 });
 
@@ -73,7 +94,7 @@ app.get("/msgRoom", checkAuthenticated, async (req, res) => {
   let room = req.query.room;
   let messages = await dBModule.findRoomInDB(Room, room);
   if (room && messages) {
-      let tmp = messages.messages;
+    let tmp = messages.messages;
     res.render("pages/msgRoom", {
       messages: tmp.toJSON(),
       room: room,
@@ -165,17 +186,20 @@ app.delete("/logout", (req, res) => {
 io.on("connection", async (socket) => {
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-
-    socket.on(rooms[index].roomName, (msg) => {
+    socket.on(rooms[index].roomName, async(msg) => {
       if (!(msg.msg === "" || msg.usr === "")) {
-        createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10),rooms[index].roomName )
+        let tmp = await socket.request.user
+        createMessage(
+          msg.msg.substring(0, 50),
+          tmp.name,
+          rooms[index].roomName
+        );
         io.emit(rooms[index].roomName, {
           msg: msg.msg.substring(0, 50),
-          usr: msg.usr.substring(0, 10),
+          usr: tmp.name,
         });
       }
     });
-
   }
 });
 
@@ -193,9 +217,8 @@ function connectToMongo(dbName) {
 }
 
 function createMessage(Message, User, roomName) {
-  let tmp = {message: Message, user: User, date: Date.now() }
-  dBModule.addMessageToRoom(Room, roomName, tmp)
-
+  let tmp = { message: Message, user: User, date: Date.now() };
+  dBModule.addMessageToRoom(Room, roomName, tmp);
 }
 
 function createUser(nameIN, passIN) {
