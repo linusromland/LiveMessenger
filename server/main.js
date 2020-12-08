@@ -167,7 +167,6 @@ io.on("connection", async (socket) => {
   for (let index = 0; index < rooms.length; index++) {
 
     socket.on(rooms[index].roomName, (msg) => {
-      console.log(msg);
       if (!(msg.msg === "" || msg.usr === "")) {
         createMessage(msg.msg.substring(0, 50), msg.usr.substring(0, 10),rooms[index].roomName )
         io.emit(rooms[index].roomName, {
