@@ -24,6 +24,10 @@ const express = require("express"),
 let store;
 connectToMongo("LiveMessenger");
 
+//Users Connected Currently
+let usersConnectedName = []
+let usersConnectedNumber = []
+
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
 app.set("view engine", "ejs");
@@ -177,37 +181,36 @@ app.delete("/logout", (req, res) => {
 });
 
 //Socket.IO ROUTES
-const userSocketIdMap = new Map(); 
 io.on("connection", async (socket) => {
+  let tmp = await socket.request.user
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-    socket.on(rooms[index].roomName, async(msg) => {
-      console.log(`${msg.usr} has connected`) //new code
-      addUserToMap(msg.usr, socket.id); //new code
-      if (!(msg.msg === "" || msg.usr === "")) {
-        let tmp = await socket.request.user
-        createMessage(
-          msg.msg.substring(0, 50),
-          tmp.name,
-          rooms[index].roomName
-        );
-        io.emit(rooms[index].roomName, {
-          msg: msg.msg.substring(0, 50),
-          usr: tmp.name,
-        });
+    socket.on(rooms[index].roomName, async (msg) => {
+      if (msg && msg.connected) {
+        addUserToRoom(tmp.name, rooms[index].roomName)
+        console.log(`${tmp.name} has connected in room ${rooms[index].roomName}`) //new code
+      } else {
+        if (!(msg.msg === "" || tmp.name === "")) {
+          createMessage(
+            msg.msg.substring(0, 50),
+            tmp.name,
+            rooms[index].roomName
+          );
+          io.emit(rooms[index].roomName, {
+            msg: msg.msg.substring(0, 50),
+            usr: tmp.name,
+          });
+        }
       }
     });
   }
-});
-
-  io.on("disconnect", () => {
+  socket.on("disconnect", async () => {
+    let tmp = await socket.request.user
     //remove this user from online list
-    removeUserFromMap(userName, socket.id);
-    console.log(`${msg.usr} has disconnected`)
-    });
-
-
-
+    removeUserFromRoom(tmp.name);
+    console.log(`${tmp.name} has disconnected`)
+  });
+});
 
 http.listen(port, function () {
   console.log("Server listening on port " + port);
@@ -220,12 +223,12 @@ function connectToMongo(dbName) {
   if (fs.existsSync("mongoauth.json")) {
     const mongAuth = require('./mongoauth.json')
     dBModule.cnctDBAuth(dbName);
-    store = sessionstore.createSessionStore({ 
+    store = sessionstore.createSessionStore({
       type: "mongodb",
       authSource: 'admin',
-        username: mongAuth.username,
-        password: mongAuth.pass
-     });
+      username: mongAuth.username,
+      password: mongAuth.pass
+    });
   } else {
     dBModule.cnctDB(dbName);
     store = sessionstore.createSessionStore({ type: "mongodb" });
@@ -267,23 +270,24 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-function addUserToMap(userName, socketId){
-  if (!userSocketIdMap.has(userName)) {
-  //when user is joining first time
-  userSocketIdMap.set(userName, new Set([socketId]));
-  } else{
-  //user had already joined from one client and now joining using another client
-  userSocketIdMap.get(userName).add(socketId);
+function addUserToRoom(userName, roomName) {
+  if (usersConnectedName.length == 0) {
+    usersConnectedName.push(roomName)
+    usersConnectedNumber.push(1)
+  } else {
+    for (let index = 0; index < usersConnectedName.length; index++) {
+      if (usersConnectedName[index] == roomName) {
+        usersConnectedNumber[index]++
+      } else {
+        usersConnectedName.push(roomName)
+        usersConnectedNumber.push(1)
+      }
+    }
   }
-  }
+  console.log(usersConnectedName)
+  console.log(usersConnectedNumber)
+}
 
-  function removeUserFromMap(userName, socketId){
-    if (userSocketIdMap.has(userName)) {
-    let userSocketIdSet = userSocketIdMap.get(userName);
-    userSocketIdSet.delete(socketID);
-    //if there are no clients for a user, remove that user from online list (map)
-    if (userSocketIdSet.size ==0 ) {
-    userSocketIdMap.delete(userName);
-    }
-    }
-    }
+function removeUserFromRoom(userName, roomName) {
+  console.log("disconnect")
+}

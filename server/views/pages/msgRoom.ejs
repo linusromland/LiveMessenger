@@ -20,7 +20,9 @@
     socket.on("connect", () => {
       window.scrollTo(0,document.body.scrollHeight);
       $(function () {
-        var socket = io();
+        socket.emit("<%- room %>", {
+          connected: "<%- room %>"
+        });
         $("#sendForm").submit(function (e) {
           e.preventDefault();
           let jsonObj = {
@@ -33,17 +35,12 @@
         });
         let i = 0;
         socket.on("<%- room %>", function (msg) {
-          /*
-          let userCSS = $("<b>").text(msg.usr + ": ");
-          userCSS.css("font-weight", "bold");*/
-          //let userCSS = document.createElement("b");
 
           let msgHtml = document.createElement("li");
           msgHtml.innerHTML = `<p><b>${escapeHtml(msg.usr)}: </b>${escapeHtml(msg.msg)}</p>`;
 
           document.getElementById("messages").appendChild(msgHtml);
 
-          //$("#messages").append($("<li>").append(($("<p>").text(msg.msg).append($("<b>").text(msg.usr + ": "))))) //.text(msg.msg).css("font-weight", "bold"));
           i = i + 1;
 
           window.scrollTo(0,document.body.scrollHeight);  
