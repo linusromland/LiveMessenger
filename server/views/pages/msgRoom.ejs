@@ -17,18 +17,6 @@
 
     const socket = io();
 
-    var userList = {};
-
-          socket.on('join', function(){
-            userList.appendChild("test")
-            console.log("hmmm")
-          });
-
-          socket.on('disconnect', function() {
-          delete userList[0];
-          console.log("testar")
-          });
-
     socket.on("connect", () => {
       window.scrollTo(0,document.body.scrollHeight);
       $(function () {
