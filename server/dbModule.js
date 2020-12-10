@@ -12,14 +12,16 @@ exports.cnctDBAuth = (collectionname) => {
                 "authSource": "admin"
             },
             "user": mongAuth.username,
-            "pass": mongAuth.pass
+            "pass": mongAuth.pass,
+            useNewUrlParser: true, 
+            useUnifiedTopology: true
         }
     );
 
     db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function () {
-        console.log("loConnected to MongoDB using collection " + collectionname)
+        console.log("Connected to MongoDB using collection " + collectionname)
     });
 }
 
