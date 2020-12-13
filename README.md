@@ -15,7 +15,7 @@ LiveMessenger starts up and by default connects to MongoDB on 127.0.0.1 (localho
 
 # Usage
 
-The **LiveMessenger** is very easy to use. 
+**LiveMessenger** is very easy to use. 
 
 You need to have NodeJS, npm and MongoDB installed on your system.
 https://nodejs.org/en/download/
