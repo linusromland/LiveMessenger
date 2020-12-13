@@ -5,7 +5,7 @@
 
 *** ***Currently in development*** ***
 
-LiveMessenger is a site that automatically shows new messages without reload required. It also has a secure login system with passportJS and saves messages in a MongoDB Database. 
+LiveMessenger is a site that automatically shows new messages without reload required. It also has a secure login system with passportJS and saves messages in a MongoDB Database. <br>
 Live preview is available on:
 > https://livemsg.romland.space/
 
