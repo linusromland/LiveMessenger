@@ -25,8 +25,8 @@ let store;
 connectToMongo("LiveMessenger");
 
 //Users Connected Currently
-let usersConnectedName = []
-let usersConnectedNumber = []
+let usersConnectedName = [];
+let usersConnectedNumber = [];
 
 //Sets and uses dependencies etc.
 const clientDir = __dirname + "/client/";
@@ -182,13 +182,15 @@ app.delete("/logout", (req, res) => {
 
 //Socket.IO ROUTES
 io.on("connection", async (socket) => {
-  let tmp = await socket.request.user
+  let tmp = await socket.request.user;
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
     socket.on(rooms[index].roomName, async (msg) => {
       if (msg && msg.connected) {
-        addUserToRoom(tmp.name, rooms[index].roomName)
-        console.log(`${tmp.name} has connected in room ${rooms[index].roomName}`) //new code
+        addUserToRoom(tmp.name, rooms[index].roomName);
+        console.log(
+          `${tmp.name} has connected in room ${rooms[index].roomName}`
+        ); //new code
       } else {
         if (!(msg.msg === "" || tmp.name === "")) {
           createMessage(
@@ -205,10 +207,12 @@ io.on("connection", async (socket) => {
     });
   }
   socket.on("disconnect", async () => {
-    let tmp = await socket.request.user
-    //remove this user from online list
-    removeUserFromRoom(tmp.name);
-    console.log(`${tmp.name} has disconnected`)
+    let tmp = await socket.request.user;
+    let rooms = await dBModule.findInDB(Room);
+    for (let index = 0; index < rooms.length; index++) {
+      removeUserFromRoom(tmp.name, rooms[index].roomName);
+    }
+    console.log(`${tmp.name} has disconnected`);
   });
 });
 
@@ -216,18 +220,16 @@ http.listen(port, function () {
   console.log("Server listening on port " + port);
 });
 
-
-
 //FUNCTIONS
 function connectToMongo(dbName) {
   if (fs.existsSync("mongoauth.json")) {
-    const mongAuth = require('./mongoauth.json')
+    const mongAuth = require("./mongoauth.json");
     dBModule.cnctDBAuth(dbName);
     store = sessionstore.createSessionStore({
       type: "mongodb",
-      authSource: 'admin',
+      authSource: "admin",
       username: mongAuth.username,
-      password: mongAuth.pass
+      password: mongAuth.pass,
     });
   } else {
     dBModule.cnctDB(dbName);
@@ -272,22 +274,32 @@ function checkNotAuthenticated(req, res, next) {
 
 function addUserToRoom(userName, roomName) {
   if (usersConnectedName.length == 0) {
-    usersConnectedName.push(roomName)
-    usersConnectedNumber.push(1)
+    usersConnectedName.push(roomName);
+    usersConnectedNumber.push(1);
   } else {
     for (let index = 0; index < usersConnectedName.length; index++) {
       if (usersConnectedName[index] == roomName) {
-        usersConnectedNumber[index]++
+        usersConnectedNumber[index]++;
       } else {
-        usersConnectedName.push(roomName)
-        usersConnectedNumber.push(1)
+        usersConnectedName.push(roomName);
+        usersConnectedNumber.push(1);
       }
     }
   }
-  console.log(usersConnectedName)
-  console.log(usersConnectedNumber)
+  console.log(usersConnectedName);
+  console.log(usersConnectedNumber);
 }
 
 function removeUserFromRoom(userName, roomName) {
-  console.log("disconnect")
+  console.log("disconnect");
+  for (let index = 0; index < usersConnectedName.length; index++) {
+    if (usersConnectedName[index] == roomName) {
+      console.log(usersConnectedNumber[index]);
+      if (usersConnectedNumber[index] > 0) {
+        usersConnectedNumber[index] = usersConnectedNumber[index] - 1;
+      }
+    }
+  }
+
+  console.log(usersConnectedNumber);
 }
