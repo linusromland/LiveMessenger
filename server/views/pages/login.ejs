@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login if you want to </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login if you want to</title>
 
     <!--IMPORT OF Crypto-JS used for the hashing and salting of password-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 
     <script>
-        function loginUser() {
-            let errorArea = document.getElementById("errorText");
-            let request = new XMLHttpRequest();
-            let name = document.getElementById("username").value;
-            let pass = CryptoJS.MD5(
-                document.getElementById("password").value + name
-            );
-            request.open("POST", "/login", true);
-            request.setRequestHeader(
-                "Content-type",
-                "application/x-www-form-urlencoded"
-            );
-            request.send(`name=${name}&password=${pass}`);
-            request.onreadystatechange = function () {
-                // This is ugly and i want to change it
-                let urlToLogin = window.location.protocol + "//" + window.location.host + "/login"
-                if(request.responseURL == urlToLogin){
-                    errorArea.innerHTML = "Username or Password is incorrect"
-                }else{
-                    window.location = request.responseURL;
-                }
-            };
-        }
+      function loginUser() {
+        let errorArea = document.getElementById("errorText");
+        let request = new XMLHttpRequest();
+        let name = document.getElementById("username").value;
+        let pass = CryptoJS.MD5(
+          document.getElementById("password").value + name
+        );
+        request.open("POST", "/login", true);
+        request.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        request.send(`name=${name}&password=${pass}`);
+        request.onreadystatechange = function () {
+          // This is ugly and i want to change it
+          let urlToLogin =
+            window.location.protocol + "//" + window.location.host + "/login";
+          if (request.responseURL == urlToLogin) {
+            errorArea.innerHTML = "Username or Password is incorrect";
+          } else {
+            window.location = request.responseURL;
+          }
+        };
+      }
     </script>
-</head>
+  </head>
 
-<body>
+  <body>
     <h1>Login</h1>
     <form onsubmit="loginUser();return false;">
-        <input type="text" placeholder="username" id="username" name="username" />
-        <input type="password" placeholder="password" id="password" name="password" />
-        <p id="errorText"><br /></p>
-        <input type="submit" value="Log In" />
+      <input type="text" placeholder="username" id="username" name="username" />
+      <input
+        type="password"
+        placeholder="password"
+        id="password"
+        name="password"
+      />
+      <p id="errorText"><br /></p>
+      <input type="submit" value="Log In" />
     </form>
     <p>By logging in you agree that LiveMessenger store cookies!</p>
     <a href="/register">Register</a>
-</body>
-
+  </body>
 </html>

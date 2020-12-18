@@ -5,7 +5,6 @@ const express = require("express"),
   cors = require("cors"),
   http = require("http").Server(app),
   io = require("socket.io")(http),
-  MessageModel = require("./models/Message.js"),
   User = require("./models/User.js"),
   Room = require("./models/Room.js"),
   dBModule = require("./dbModule.js"),
@@ -177,15 +176,15 @@ app.delete("/logout", (req, res) => {
 });
 
 //Socket.IO ROUTES
-const userSocketIdMap = new Map(); 
+const userSocketIdMap = new Map();
 io.on("connection", async (socket) => {
   let rooms = await dBModule.findInDB(Room);
   for (let index = 0; index < rooms.length; index++) {
-    socket.on(rooms[index].roomName, async(msg) => {
-      console.log(`${msg.usr} has connected`) //new code
+    socket.on(rooms[index].roomName, async (msg) => {
+      console.log(`${msg.usr} has connected`); //new code
       addUserToMap(msg.usr, socket.id); //new code
       if (!(msg.msg === "" || msg.usr === "")) {
-        let tmp = await socket.request.user
+        let tmp = await socket.request.user;
         createMessage(
           msg.msg.substring(0, 50),
           tmp.name,
@@ -200,32 +199,27 @@ io.on("connection", async (socket) => {
   }
 });
 
-  io.on("disconnect", () => {
-    //remove this user from online list
-    removeUserFromMap(userName, socket.id);
-    console.log(`${msg.usr} has disconnected`)
-    });
-
-
-
+io.on("disconnect", () => {
+  //remove this user from online list
+  removeUserFromMap(userName, socket.id);
+  console.log(`${msg.usr} has disconnected`);
+});
 
 http.listen(port, function () {
   console.log("Server listening on port " + port);
 });
 
-
-
 //FUNCTIONS
 function connectToMongo(dbName) {
   if (fs.existsSync("mongoauth.json")) {
-    const mongAuth = require('./mongoauth.json')
+    const mongAuth = require("./mongoauth.json");
     dBModule.cnctDBAuth(dbName);
-    store = sessionstore.createSessionStore({ 
+    store = sessionstore.createSessionStore({
       type: "mongodb",
-      authSource: 'admin',
-        username: mongAuth.username,
-        password: mongAuth.pass
-     });
+      authSource: "admin",
+      username: mongAuth.username,
+      password: mongAuth.pass,
+    });
   } else {
     dBModule.cnctDB(dbName);
     store = sessionstore.createSessionStore({ type: "mongodb" });
@@ -267,23 +261,23 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-function addUserToMap(userName, socketId){
+function addUserToMap(userName, socketId) {
   if (!userSocketIdMap.has(userName)) {
-  //when user is joining first time
-  userSocketIdMap.set(userName, new Set([socketId]));
-  } else{
-  //user had already joined from one client and now joining using another client
-  userSocketIdMap.get(userName).add(socketId);
+    //when user is joining first time
+    userSocketIdMap.set(userName, new Set([socketId]));
+  } else {
+    //user had already joined from one client and now joining using another client
+    userSocketIdMap.get(userName).add(socketId);
   }
-  }
+}
 
-  function removeUserFromMap(userName, socketId){
-    if (userSocketIdMap.has(userName)) {
+function removeUserFromMap(userName, socketId) {
+  if (userSocketIdMap.has(userName)) {
     let userSocketIdSet = userSocketIdMap.get(userName);
     userSocketIdSet.delete(socketID);
     //if there are no clients for a user, remove that user from online list (map)
-    if (userSocketIdSet.size ==0 ) {
-    userSocketIdMap.delete(userName);
+    if (userSocketIdSet.size == 0) {
+      userSocketIdMap.delete(userName);
     }
-    }
-    }
+  }
+}
