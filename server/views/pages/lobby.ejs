@@ -26,7 +26,13 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title"><%= rooms[index].roomName %> </h5>
-            <h6 class="card-subtitle mb-2 text-muted">Users: 0/<%= rooms[index].maxUsers %></h6> <!--Active users in the room-->
+            <% let usrConnected = 0 %> 
+            <% for( let i = 0; i < roomName.length; i++ ) { %>
+                <% if (roomName[i] == rooms[index].roomName) { %>
+                    <% usrConnected = roomNumber[i] %>
+                <% } %>
+            <% } %>
+            <h6 class="card-subtitle mb-2 text-muted">Users: <%= usrConnected %>/<%= rooms[index].maxUsers %></h6> <!--Active users in the room-->
             <p class="card-text"><%= rooms[index].desc %></p> <!--Text about room-->
             <a href="/msgroom?room=<%= rooms[index].roomName %>" class="card-link">Connect!</a> <!--Link to that room-->
         </div>
