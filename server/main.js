@@ -85,6 +85,8 @@ app.get("/", checkNotAuthenticated, (req, res) => {
 app.get("/lobby", checkAuthenticated, async (req, res) => {
   res.render("pages/lobby", {
     rooms: await dBModule.findInDB(Room),
+    roomNumber: usersConnectedNumber,
+    roomName: usersConnectedName,
   });
 });
 
@@ -291,15 +293,15 @@ function addUserToRoom(userName, roomName) {
 }
 
 function removeUserFromRoom(userName, roomName) {
-  console.log("disconnect");
   for (let index = 0; index < usersConnectedName.length; index++) {
     if (usersConnectedName[index] == roomName) {
-      console.log(usersConnectedNumber[index]);
+      usersConnectedNumber[index] =  usersConnectedNumber[index] - 1;
       if (usersConnectedNumber[index] > 0) {
         usersConnectedNumber[index] = usersConnectedNumber[index] - 1;
       }
     }
   }
 
+  console.log(usersConnectedName);
   console.log(usersConnectedNumber);
 }
