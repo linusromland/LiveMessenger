@@ -38,9 +38,9 @@
 <p>Create a new Chatting Room! Choose a Room name and max users! Room will be public for all to see!</p>
 <p>Max Users have a limit to 50!</p>
 <form onsubmit="registerRoom();return false;">
-    <input type="text" placeholder="Room Name" name="roomName" id="roomName"/>
+    <input type="text" placeholder="Room Name" name="roomName" id="roomName" maxlength="25"/>
     <br/>
-    <input type="text" placeholder="Description" name="desc" id="desc"/>
+    <input type="text" placeholder="Description" name="desc" id="desc" maxlength="50"/>
     <input type="number" placeholder="Max Users" id="maxUsers" name="maxUsers" min="1" max="50"/>
     <p id="errorText">
         <br/>

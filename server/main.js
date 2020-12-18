@@ -149,8 +149,8 @@ app.post("/newRoom", checkAuthenticated, async (req, res) => {
         dBModule.saveToDB(
           createRoom(
             tmp.name,
-            req.body.roomName,
-            req.body.desc,
+            req.body.roomName.substring(0, 25),
+            req.body.desc.substring(0, 50),
             req.body.maxUsers
           )
         );
