@@ -8,42 +8,114 @@
     <!--CDN IMPORT OF Crypto-JS used for the hashing and salting of password-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+<!--Bootstrap v4.5.2-->
+<link
+rel="stylesheet"
+href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<style>
+  html {
+    background-color: #56baed;
+  }
 
+  body {
+    font-family: "Poppins", sans-serif;
+    height: 100vh;
+  }
+
+  a {
+    color: #92badd;
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 400;
+  }
+
+  h2 {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+    margin: 40px 8px 10px 8px;
+    color: #cccccc;
+  }
+
+  /* STRUCTURE */
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+  }
+
+  #formContent {
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    background: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    padding: 0px;
+    -webkit-box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+    box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+    text-align: center;
+  }
+
+  #formFooter {
+    background-color: #f6f6f6;
+    border-top: 1px solid #dce8f1;
+    padding: 25px;
+    text-align: center;
+    -webkit-border-radius: 0 0 10px 10px;
+    border-radius: 0 0 10px 10px;
+  }
+</style>
     <script>
-        function registerUser() {
-    let password = document.getElementById("password").value;
-    let confirmPassword = document.getElementById("passwordConfirm").value;
-    let errorText = document.getElementById("errorText");
+      function registerUser() {
+        let password = document.getElementById("password").value;
+        let confirmPassword = document.getElementById("passwordConfirm").value;
+        let errorText = document.getElementById("errorText");
 
-    if (password == confirmPassword) {
-        console.log("usercreation maybe");
-        let request = new XMLHttpRequest();
-        let name = document.getElementById("username").value;
-        let pass = CryptoJS.MD5(password + name);
-        request.open("POST", "/register", true);
-        request.setRequestHeader(
+        if (password == confirmPassword) {
+          console.log("usercreation maybe");
+          let request = new XMLHttpRequest();
+          let name = document.getElementById("username").value;
+          let pass = CryptoJS.MD5(password + name);
+          request.open("POST", "/register", true);
+          request.setRequestHeader(
             "Content-type",
             "application/x-www-form-urlencoded"
-        );
-        request.send(`name=${name}&password=${pass}`);
-        request.onreadystatechange = function () {
+          );
+          request.send(`name=${name}&password=${pass}`);
+          request.onreadystatechange = function () {
             if (request.response == "taken") {
-                errorText.innerHTML = "Username taken!";
+              errorText.innerHTML = "Username taken!";
             } else if (request.status == 500) {
-                errorText.innerHTML = "Error occured!";
+              errorText.innerHTML = "Error occured!";
             } else if (request.status == 201) {
-                window.location = "/login";
+              window.location = "/login";
             }
-        };
-    } else {
-        errorText.innerHTML = "Passwords do not match!";
-    }
-}
+          };
+        } else {
+          errorText.innerHTML = "Passwords do not match!";
+        }
+      }
     </script>
   </head>
 
-  <body >
-    <h1>LiveMessenger - Register</h1>
+  <body>
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <div class="fadeIn first">
+          <h1>Register To LiveMessenger</h1>
+        </div>
     <form onsubmit="registerUser();return false;">
       <input type="text" placeholder="username" name="username" id="username" />
       <br />
@@ -65,6 +137,10 @@
       </p>
       <input type="submit" value="Register" />
     </form>
-    <p>By creating an account you agree that LiveMessenger (https://livemsg.romland.space/) store cookies!</p>
+    <div id="formFooter">
+      <p>By creating an account you agree that LiveMessenger
+        (https://livemsg.romland.space/) store cookies!</p>
+      <a class="underlineHover" href="/login">Already have an account?</a>
+    </div>
   </body>
 </html>

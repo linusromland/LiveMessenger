@@ -1,52 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login if you want to </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login if you want to</title>
 
     <!--IMPORT OF Crypto-JS used for the hashing and salting of password-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 
+    <!--Bootstrap v4.5.2-->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        function loginUser() {
-            let errorArea = document.getElementById("errorText");
-            let request = new XMLHttpRequest();
-            let name = document.getElementById("username").value;
-            let pass = CryptoJS.MD5(
-                document.getElementById("password").value + name
-            );
-            request.open("POST", "/login", true);
-            request.setRequestHeader(
-                "Content-type",
-                "application/x-www-form-urlencoded"
-            );
-            request.send(`name=${name}&password=${pass}`);
-            request.onreadystatechange = function () {
-                // This is ugly and i want to change it
-                let urlToLogin = window.location.protocol + "//" + window.location.host + "/login"
-                if(request.responseURL == urlToLogin){
-                    errorArea.innerHTML = "Username or Password is incorrect"
-                }else{
-                    window.location = request.responseURL;
-                }
-            };
-        }
+      function loginUser() {
+        let errorArea = document.getElementById("errorText");
+        let request = new XMLHttpRequest();
+        let name = document.getElementById("username").value;
+        let pass = CryptoJS.MD5(
+          document.getElementById("password").value + name
+        );
+        request.open("POST", "/login", true);
+        request.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        request.send(`name=${name}&password=${pass}`);
+        request.onreadystatechange = function () {
+          // This is ugly and i want to change it
+          let urlToLogin =
+            window.location.protocol + "//" + window.location.host + "/login";
+          if (request.responseURL == urlToLogin) {
+            errorArea.innerHTML = "Username or Password is incorrect";
+          } else {
+            window.location = request.responseURL;
+          }
+        };
+      }
     </script>
-</head>
 
-<body>
-    <h1>Login</h1>
-    <form onsubmit="loginUser();return false;">
-        <input type="text" placeholder="username" id="username" name="username" />
-        <input type="password" placeholder="password" id="password" name="password" />
-        <p id="errorText"><br /></p>
-        <input type="submit" value="Log In" />
-    </form>
-    <p>By logging in you agree that LiveMessenger store cookies!</p>
-    <a href="/register">Register</a>
-</body>
+    <style>
+      html {
+        background-color: #56baed;
+      }
 
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+      }
+
+      a {
+        color: #92badd;
+        display: inline-block;
+        text-decoration: none;
+        font-weight: 400;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: inline-block;
+        margin: 40px 8px 10px 8px;
+        color: #cccccc;
+      }
+
+      /* STRUCTURE */
+
+      .wrapper {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        min-height: 100%;
+        padding: 20px;
+      }
+
+      #formContent {
+        -webkit-border-radius: 10px 10px 10px 10px;
+        border-radius: 10px 10px 10px 10px;
+        background: #fff;
+        padding: 30px;
+        width: 90%;
+        max-width: 450px;
+        position: relative;
+        padding: 0px;
+        -webkit-box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      #formFooter {
+        background-color: #f6f6f6;
+        border-top: 1px solid #dce8f1;
+        padding: 25px;
+        text-align: center;
+        -webkit-border-radius: 0 0 10px 10px;
+        border-radius: 0 0 10px 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <div class="fadeIn first">
+          <h1>Login To LiveMessenger</h1>
+        </div>
+        <form onsubmit="loginUser();return false;">
+          <input
+            type="text"
+            placeholder="Username"
+            class="fadeIn second"
+            id="username"
+            name="username"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            class="fadeIn third"
+            id="password"
+            name="password"
+          />
+          <p id="errorText"><br /></p>
+          <input type="submit" class="fadeIn fourth" value="Log In" />
+        </form>
+        <div id="formFooter">
+          <p>By logging in you agree that LiveMessenger store cookies!</p>
+          <a class="underlineHover" href="/register">Don't have an account?</a>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

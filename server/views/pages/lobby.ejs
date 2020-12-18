@@ -1,42 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <title>LiveMessenger</title>
     <link rel="stylesheet" href="/style/msg.css" />
-    <link rel="shortcut icon" type="image/jpg"
-          href="https://uploads.marksism.space/image/6d1d957424e6e13d4762636bc1b1a503.png" />
+    <link
+      rel="shortcut icon"
+      type="image/jpg"
+      href="https://uploads.marksism.space/image/6d1d957424e6e13d4762636bc1b1a503.png"
+    />
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
     <!--Bootstrap v4.5.2-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 
-
-</head>
-<body>
-<nav class="navbar navbar-light bg-light">
-    <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
-    <a href="/newRoom" class="nav-link badge badge-primary">Create your own room</a>
-</nav>
-<% for( let index = 0; index < rooms.length; index++ ) { %>
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h5 class="card-title"><%= rooms[index].roomName %> </h5>
-            <% let usrConnected = 0 %> 
-            <% for( let i = 0; i < roomName.length; i++ ) { %>
-                <% if (roomName[i] == rooms[index].roomName) { %>
-                    <% usrConnected = roomNumber[i] %>
-                <% } %>
-            <% } %>
-            <h6 class="card-subtitle mb-2 text-muted">Users: <%= usrConnected %>/<%= rooms[index].maxUsers %></h6> <!--Active users in the room-->
-            <p class="card-text"><%= rooms[index].desc %></p> <!--Text about room-->
-            <a href="/msgroom?room=<%= rooms[index].roomName %>" class="card-link">Connect!</a> <!--Link to that room-->
-        </div>
+    <script>
+      function logOut() {
+        let request = new XMLHttpRequest();
+        request.open("POST", "/logout?_method=DELETE", true);
+        request.send();
+        request.onreadystatechange = function () {
+            if (request.status == 200) {
+                    window.location = "/";
+                }
+        };
+      }
+    </script>
+  </head>
+  <body>
+    <nav class="navbar navbar-light bg-light">
+      <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
+      <a href="/newRoom" class="nav-link badge badge-primary"
+        >Create your own room</a
+      >
+      <button onclick="logOut()">Log Out</button>
+    </nav>
+    <% for( let index = 0; index < rooms.length; index++ ) { %>
+    <div class="card" style="width: 18rem">
+      <div class="card-body">
+        <h5 class="card-title"><%= rooms[index].roomName %></h5>
+        <% let usrConnected = 0 %> <% for( let i = 0; i < roomName.length; i++ )
+        { %> <% if (roomName[i] == rooms[index].roomName) { %> <% usrConnected =
+        roomNumber[i] %> <% } %> <% } %>
+        <h6 class="card-subtitle mb-2 text-muted">
+          Users: <%= usrConnected %>/<%= rooms[index].maxUsers %>
+        </h6>
+        <!--Active users in the room-->
+        <p class="card-text"><%= rooms[index].desc %></p>
+        <!--Text about room-->
+        <a href="/msgroom?room=<%= rooms[index].roomName %>" class="card-link"
+          >Connect!</a
+        >
+        <!--Link to that room-->
+      </div>
     </div>
-<% } %>
-</body>
+    <% } %>
+  </body>
 </html>
