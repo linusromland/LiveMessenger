@@ -36,7 +36,7 @@ Then you run:
 
 By default **LiveMessenger** does not use authentication to MongoDB.
 
-If you have your MongoDB Database with authentication turned on you could use that with WebCrawler.
+If you have your MongoDB Database with authentication turned on you could use that with **LiveMessenger**.
 To do this copy the file named **mongoauth.json.example** and name it **mongoauth.json** and then specify your credentials in the file
 
 **LiveMessenger** only supports authentication with username and password. Auth DB must be admin!
