@@ -1,6 +1,6 @@
 # LiveMessenger
 
-**This is a school assignment for WESWEB01**
+**This is a school assignment for WESWEB01**<br>
 *Linus Romland, Svante Jonsson & Markus Simonsen*
 
 *** ***Currently in development*** ***
