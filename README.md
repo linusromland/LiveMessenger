@@ -41,10 +41,8 @@ To do this copy the file named **mongoauth.json.example** and name it **mongoaut
 
 **LiveMessenger** only supports authentication with username and password. Auth DB must be admin!
 
-
+<!-- LICENSE -->
 ## License
 
-**LiveMessenger** is under MIT License.
- For information about the MIT License check out the following link:
-  https://github.com/linusromland/LiveMessenger/blob/master/LICENSE
+Distributed under the MIT License. See `LICENSE` for more information.
 
