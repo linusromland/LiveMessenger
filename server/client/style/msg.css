@@ -10,6 +10,7 @@ body {
   font: 13px Helvetica, Arial;
 }
 form {
+  background-color: rgb(77, 77, 77);
   padding: 3px;
   position: fixed;
   bottom: 0;
