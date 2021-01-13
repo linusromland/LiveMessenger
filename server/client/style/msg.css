@@ -14,9 +14,7 @@ form {
   padding: 3px;
   position: fixed;
   bottom: 0;
-  width: 96%;
-  margin: 2%;
-  margin-bottom: 5px;
+  width: 100%;
 }
 form input {
   border: 0;
