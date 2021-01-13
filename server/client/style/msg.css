@@ -29,6 +29,7 @@ form button {
   border: none;
   padding: 10px;
   float: right;
+  margin-right: 0.5%;
   margin-top: 10px;
 }
 #messages {
