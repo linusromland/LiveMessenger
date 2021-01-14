@@ -292,9 +292,9 @@ function removeUserFromRoom(userName, roomName) {
   for (let index = 0; index < usersConnectedName.length; index++) {
     if (usersConnectedName[index] == roomName) {
       usersConnectedNumber[index] =  usersConnectedNumber[index] - 1;
-      if (usersConnectedNumber[index] > 0) {
+      /*if (usersConnectedNumber[index] > 0) {
         usersConnectedNumber[index] = usersConnectedNumber[index] - 1;
-      }
+      }*/
     }
   }
 
