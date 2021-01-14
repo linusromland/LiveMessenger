@@ -112,10 +112,6 @@ app.get("/newRoom", checkAuthenticated, async (req, res) => {
   res.render("pages/newRoom", {});
 });
 
-app.get("/auth", checkAuthenticated, async (req, res) => {
-  res.render("pages/auth", {});
-});
-
 app.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("pages/login");
 });
