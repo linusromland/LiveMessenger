@@ -37,11 +37,9 @@
   <body>
     <nav class="navbar navbar-light bg-light">
       <span class="navbar-brand mb-0 h1">Welcome to LiveMessenger</span>
-      <a href="/newRoom" class="nav-link badge badge-primary"
-        >Create your own room</a
-      >
       <button onclick="logOut()">Log Out</button>
     </nav>
+    <button onclick="window.location.href='/newRoom'">Create your own room</button>
     <% for( let index = 0; index < rooms.length; index++ ) { %>
     <div class="card" style="width: 18rem">
       <div class="card-body">
