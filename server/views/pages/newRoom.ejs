@@ -1,51 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Room - LiveMessenger</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        function registerRoom() {
-            let errorText = document.getElementById("errorText");
+      function registerRoom() {
+        let errorText = document.getElementById("errorText");
 
-
-            console.log("room Creation maybe");
-            let request = new XMLHttpRequest();
-            let roomName = document.getElementById("roomName").value;
-            let desc = document.getElementById("desc").value;
-            let maxUsers = document.getElementById("maxUsers").value;
-            request.open("POST", "/newRoom", true);
-            request.setRequestHeader(
-                "Content-type",
-                "application/x-www-form-urlencoded"
-            );
-            request.send(`roomName=${roomName}&desc=${desc}&maxUsers=${maxUsers}`);
-            request.onreadystatechange = function () {
-                if (request.response == "taken") {
-                    errorText.innerHTML = "Room Name taken!";
-                } else if (request.status == 500) {
-                    errorText.innerHTML = "Error occured!";
-                } else if (request.status == 201) {
-                    window.location = "/lobby";
-                }
-            };
-        }
+        console.log("room Creation maybe");
+        let request = new XMLHttpRequest();
+        let roomName = document.getElementById("roomName").value;
+        let desc = document.getElementById("desc").value;
+        let maxUsers = document.getElementById("maxUsers").value;
+        request.open("POST", "/newRoom", true);
+        request.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        request.send(`roomName=${roomName}&desc=${desc}&maxUsers=${maxUsers}`);
+        request.onreadystatechange = function () {
+          if (request.response == "taken") {
+            errorText.innerHTML = "Room Name taken!";
+          } else if (request.status == 500) {
+            errorText.innerHTML = "Error occured!";
+          } else if (request.status == 201) {
+            window.location = "/lobby";
+          }
+        };
+      }
     </script>
-</head>
+    <style>
+      html {
+        background-color: #56baed;
+      }
 
-<body>
-<h1>LiveMessenger - Register new Room</h1>
-<p>Create a new Chatting Room! Choose a Room name and max users! Room will be public for all to see!</p>
-<p>Max Users have a limit to 50!</p>
-<form onsubmit="registerRoom();return false;">
-    <input type="text" placeholder="Room Name" name="roomName" id="roomName" maxlength="25"/>
-    <br/>
-    <input type="text" placeholder="Description" name="desc" id="desc" maxlength="50"/>
-    <input type="number" placeholder="Max Users" id="maxUsers" name="maxUsers" min="1" max="50"/>
-    <p id="errorText">
-        <br/>
-    </p>
-    <input type="submit" value="Register"/>
-</form>
-</body>
+      body {
+        font-family: "Poppins", sans-serif;
+        height: 100vh;
+      }
+
+      a {
+        color: #92badd;
+        display: inline-block;
+        text-decoration: none;
+        font-weight: 400;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+        text-transform: uppercase;
+        display: inline-block;
+        margin: 40px 8px 10px 8px;
+        color: #cccccc;
+      }
+
+      .wrapper {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        width: 100%;
+        min-height: 100%;
+        padding: 20px;
+      }
+
+      #formContent {
+        -webkit-border-radius: 10px 10px 10px 10px;
+        border-radius: 10px 10px 10px 10px;
+        background: #fff;
+        padding: 30px;
+        width: 90%;
+        max-width: 450px;
+        position: relative;
+        -webkit-box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+
+      #formFooter {
+        background-color: #f6f6f6;
+        border-top: 1px solid #dce8f1;
+        padding: 25px;
+        text-align: center;
+        -webkit-border-radius: 0 0 10px 10px;
+        border-radius: 0 0 10px 10px;
+      }
+      input{
+          margin: 2%;
+      }
+    </style>
+  </head>
+
+  <body>
+    
+    <div class="wrapper fadeInDown">
+        <div id="formContent">
+          <div class="fadeIn first">
+            <h1>LiveMessenger - Register new Room</h1>
+            <p>
+                Create a new Chatting Room! Choose a Room name and max users! Room will be
+                public for all to see!
+              </p>
+              <p>Max Users have a limit to 50!</p>
+          </div>
+    <form onsubmit="registerRoom();return false;">
+      <input
+        type="text"
+        placeholder="Room Name"
+        name="roomName"
+        id="roomName"
+        maxlength="25"
+      />
+      <br />
+      <input
+        type="text"
+        placeholder="Description"
+        name="desc"
+        id="desc"
+        maxlength="50"
+      />
+      <input
+        type="number"
+        placeholder="Max Users"
+        id="maxUsers"
+        name="maxUsers"
+        min="1"
+        max="50"
+      />
+      <p id="errorText">
+        <br />
+      </p>
+      <input type="submit" value="Register" />
+    </form>
+    <div id="formFooter">
+        <p>When the room is created you can find it in the lobby!</p>
+      </div>
+  </body>
 </html>
